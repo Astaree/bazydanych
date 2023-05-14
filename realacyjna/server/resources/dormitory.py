@@ -21,20 +21,6 @@ class Dormitory(Resource):
             return dormitory, 200
         return {'message': 'Dormitory not found'}, 404
     
-    def post(self, id):
-        if self.model.read_one(id):
-            return {'message': 'Dormitory with given ID already exists.'}, 400
-        data = Dormitory.parser.parse_args()
-        name = data['name']
-        address = data['address']
-        city = data['city']
-        state = data['state']
-        zip = data['zip']
-        capacity = data['capacity']
-        occupancy = data['occupancy']
-
-        self.model.create(name, address, city, state, zip, capacity, occupancy)
-        return {'message': 'Dormitory created successfully'}, 201
     
     def put(self, id):
         data = Dormitory.parser.parse_args()
@@ -69,4 +55,15 @@ class DormitoryList(Resource):
     def get(self):
         return {'faculties': self.model.read_all()}, 200
 
+def post(self):
+        data = Dormitory.parser.parse_args()
+        name = data['name']
+        address = data['address']
+        city = data['city']
+        state = data['state']
+        zip = data['zip']
+        capacity = data['capacity']
+        occupancy = data['occupancy']
 
+        self.model.create(name, address, city, state, zip, capacity, occupancy)
+        return {'message': 'Dormitory created successfully'}, 201

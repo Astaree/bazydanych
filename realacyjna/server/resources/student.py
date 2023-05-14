@@ -1,97 +1,65 @@
-from flask import Blueprint, jsonify, request
-from werkzeug.exceptions import BadRequest, NotFound
-from datetime import datetime
+from sqlite3 import Date
+from flask_restful import Resource, reqparse
+from models.studnet import StudentModel
 
-from .db import get_db
+class Student(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument('name', type=str, required=True, help='Name is a required field.')
+    parser.add_argument('surname', type=str, required=True, help='Surname is a required field.')
+    parser.add_argument('email', type=str, required=True, help='Email is a required field.')
+    parser.add_argument('date_of_birth', type=Date, required=True, help='Date of birth is a required field.')
+    parser.add_argument('gender', type=str, required=True, help='Gender is a required field.')
+    parser.add_argument('major', type=str, required=True, help='Major is a required field.')
+    parser.add_argument('join_date', type=Date, required=True, help='Major is a required field.')
+    parser.add_argument('leave_date', type=Date, required=True, help='Major is a required field.')
 
-bp = Blueprint("student", __name__, url_prefix="/api")
 
-@bp.route("/students", methods=["GET"])
-def get_students():
-    db = get_db()
-    students = db.execute(
-        "SELECT * FROM student"
-    ).fetchall()
-    return jsonify(students)
+    def __init__(self):
+        self.model = StudentModel()
 
-@bp.route("/students/<int:id>", methods=["GET"])
-def get_student(id):
-    db = get_db()
-    student = db.execute(
-        "SELECT * FROM student WHERE id = ?", (id,)
-    ).fetchone()
-    if student is None:
-        raise NotFound(f"Student with id {id} not found")
-    return jsonify(student)
+    def get(self, id):
+        student = self.model.read_one(id)
+        if student:
+            return student, 200
+        return {'message': 'Student not found'}, 404
 
-@bp.route("/students", methods=["POST"])
-def create_student():
-    db = get_db()
-    data = request.get_json()
-    if not data:
-        raise BadRequest("No input data provided")
-    name = data.get("name")
-    surname = data.get("surname")
-    email = data.get("email")
-    date_of_birth = data.get("date_of_birth")
-    gender = data.get("gender")
-    major = data.get("major")
-    if not name or not surname or not email or not date_of_birth or not gender or not major:
-        raise BadRequest("Missing required fields")
+    def put(self, id):
+        data = Student.parser.parse_args()
+        name = data['name']
+        surname = data['surname']
+        email = data['email']
+        date_of_birth = data['date_of_birth']
+        gender = data['gender']
+        major = data['major']
 
-    try:
-        date_of_birth = datetime.strptime(date_of_birth, "%Y-%m-%d")
-    except ValueError:
-        raise BadRequest("Invalid date format. Should be YYYY-MM-DD")
+        if self.model.read_one(id):
+            self.model.update(id, name, surname, email, date_of_birth, gender, major)
+            return {'message': 'Student updated successfully.'}, 200
+        return {'message': 'Student not found'}, 404
 
-    db.execute(
-        "INSERT INTO student (name, surname, email, date_of_birth, gender, major) VALUES (?, ?, ?, ?, ?, ?)",
-        (name, surname, email, date_of_birth, gender, major),
-    )
-    db.commit()
-    return "", 201
+    def delete(self, id):
+        if self.model.read_one(id):
+            self.model.delete(id)
+            return {'message': 'Student deleted successfully.'}, 200
+        return {'message': 'Student not found.'}, 404
 
-@bp.route("/students/<int:id>", methods=["PUT"])
-def update_student(id):
-    db = get_db()
-    data = request.get_json()
-    if not data:
-        raise BadRequest("No input data provided")
-    name = data.get("name")
-    surname = data.get("surname")
-    email = data.get("email")
-    date_of_birth = data.get("date_of_birth")
-    gender = data.get("gender")
-    major = data.get("major")
-    if not name or not surname or not email or not date_of_birth or not gender or not major:
-        raise BadRequest("Missing required fields")
 
-    try:
-        date_of_birth = datetime.strptime(date_of_birth, "%Y-%m-%d")
-    except ValueError:
-        raise BadRequest("Invalid date format. Should be YYYY-MM-DD")
+class StudentList(Resource):
+    def __init__(self):
+        self.model = StudentModel()
 
-    student = db.execute(
-        "SELECT * FROM student WHERE id = ?", (id,)
-    ).fetchone()
-    if student is None:
-        raise NotFound(f"Student with id {id} not found")
+    def get(self):
+        students = self.model.read_all()
+        return {'students': students}, 200
 
-    db.execute(
-        "UPDATE student SET name = ?, surname = ?, email = ?, date_of_birth = ?, gender = ?, major = ? WHERE id = ?",
-        (name, surname, email, date_of_birth, gender, major, id),
-    )
-    db.commit()
-    return "", 204
+    def post(self):
+        data = Student.parser.parse_args()
+        name = data['name']
+        surname = data['surname']
+        email = data['email']
+        date_of_birth = data['date_of_birth']
+        gender = data['gender']
+        major = data['major']
 
-@bp.route("/students/<int:id>", methods=["DELETE"])
-def delete_student(id):
-    db = get_db()
-    student = db.execute(
-        "SELECT * FROM student WHERE id = ?", (id,)
-    ).fetchone()
-    if student is None:
-        raise NotFound(f"Student with id {id} not found")
-    db.execute("DELETE FROM student WHERE id = ?", (id,))
-    db.commit()
-    return "", 204
+        self.model.create(name, surname, email, date_of_birth, gender, major)
+        return {'message': 'Student created successfully.'}, 201
