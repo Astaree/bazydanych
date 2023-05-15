@@ -50,7 +50,8 @@ class MajorList(Resource):
         self.model = MajorModel()
 
     def get(self):
-        return {'majors': self.model.read_all()}, 200
+        majors = self.model.read_all()
+        return majors, 200
 
 def post(self):
 

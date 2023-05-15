@@ -13,14 +13,19 @@
     <div class="wrapper">
         <div class="header">
             <p>Select destination</p>
-
             <ul class="nav">
                 <li><button onclick="getTable('university')">university</button></li>
-
+                <li><button onclick="getTable('students')">student</button></li>
+                <li><button onclick="getTable('dormitories')">dormitories</button></li>
+                <li><button onclick="getTable('majors')">major</button></li>
+                <li><button onclick="getTable('students_dormitory')">Students-dormitory</button></li>
+                <li><button onclick="getTable('students_major')">Students-major</button></li>
             </ul>
-
         </div>
         <main>
+            <div>
+                <ul id="nav_table" class="nav-table"></ul>
+            </div>
             <table id="table-data">
 
             </table>

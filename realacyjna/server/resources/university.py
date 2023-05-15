@@ -40,7 +40,6 @@ class UniversityList(Resource):
 
     def get(self):
         universities = self.model.read_all()
-        print(universities)
         return universities, 200
 
     def post(self):
@@ -48,6 +47,6 @@ class UniversityList(Resource):
         name = data['name']
         location = data['location']
         dean_name = data['dean_name']
-
+        print("passed parser")
         self.model.create(name, location, dean_name)
         return {'message': 'University created successfully.'}, 201

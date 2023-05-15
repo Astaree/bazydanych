@@ -42,7 +42,8 @@ class StudentMajorList(Resource):
         self.model = StudentMajorModel()
     
     def get(self):
-        return {'student_faculties': self.model.read_all()}, 200 
+        student_faculties = self.model.read_all()
+        return student_faculties, 200 
     
     def post(self, id):
         if self.model.read_one(id):

@@ -42,7 +42,8 @@ class StudentDormList(Resource):
         self.model = StudentDormModel()
     
     def get(self):
-        return {'student_dormitories': self.model.read_all()}, 200
+        stud_dorm = self.model.read_all()
+        return stud_dorm, 200
     
     def post(self):
         data = StudentDormModel.parser.parse_args()

@@ -53,7 +53,8 @@ class DormitoryList(Resource):
         self.model = DormitoryModel()
     
     def get(self):
-        return {'faculties': self.model.read_all()}, 200
+        dormitories = self.model.read_all()
+        return dormitories, 200
 
 def post(self):
         data = Dormitory.parser.parse_args()

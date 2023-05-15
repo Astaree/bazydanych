@@ -20,8 +20,8 @@ api.add_resource(University, '/api/university/<int:id>')
 api.add_resource(UniversityList, '/api/university')
 
 # Add routes for the Major resource
-api.add_resource(Major, '/api/major/<int:id>')
-api.add_resource(MajorList, '/api/major')
+api.add_resource(Major, '/api/majors/<int:id>')
+api.add_resource(MajorList, '/api/majors')
 
 # Add routes for the Student resource
 api.add_resource(Student, '/api/students/<int:id>')

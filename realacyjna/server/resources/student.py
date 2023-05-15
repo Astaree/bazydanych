@@ -9,7 +9,6 @@ class Student(Resource):
     parser.add_argument('email', type=str, required=True, help='Email is a required field.')
     parser.add_argument('date_of_birth', type=Date, required=True, help='Date of birth is a required field.')
     parser.add_argument('gender', type=str, required=True, help='Gender is a required field.')
-    parser.add_argument('major', type=str, required=True, help='Major is a required field.')
     parser.add_argument('join_date', type=Date, required=True, help='Major is a required field.')
     parser.add_argument('leave_date', type=Date, required=True, help='Major is a required field.')
 
@@ -30,10 +29,9 @@ class Student(Resource):
         email = data['email']
         date_of_birth = data['date_of_birth']
         gender = data['gender']
-        major = data['major']
 
         if self.model.read_one(id):
-            self.model.update(id, name, surname, email, date_of_birth, gender, major)
+            self.model.update(id, name, surname, email, date_of_birth, gender)
             return {'message': 'Student updated successfully.'}, 200
         return {'message': 'Student not found'}, 404
 
@@ -50,7 +48,7 @@ class StudentList(Resource):
 
     def get(self):
         students = self.model.read_all()
-        return {'students': students}, 200
+        return students, 200
 
     def post(self):
         data = Student.parser.parse_args()

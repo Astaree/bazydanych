@@ -50,7 +50,7 @@ class StudentModel:
         return students
 
     def update(self, id, name, surname, email, date_of_birth, gender, enrollment_date, leave_date):
-        query = 'UPDATE student SET name = ?, surname = ?, email = ?, date_of_birth = ?, gender = ?, , enrollment_date = ?, leave_date =? WHERE id = ?'
+        query = 'UPDATE student SET name = ?, surname = ?, email = ?, date_of_birth = ?, gender = ?,  enrollment_date = ?, leave_date =? WHERE id = ?'
         self.cursor.execute(query, (name, surname, email,
                             date_of_birth, gender, enrollment_date, leave_date, id))
         self.connection.commit()

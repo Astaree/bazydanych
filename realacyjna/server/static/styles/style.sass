@@ -63,3 +63,26 @@ table {
     background-color: #f2f2f2;
   }
 }
+
+.nav-table{
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid #000;
+  margin-bottom: 1rem;
+
+  li{
+    margin-left: 1rem;
+    list-style: none;
+    button{
+      color: blue;
+      border: none;
+      background-color: transparent;
+      cursor: pointer;
+      &:hover{
+        text-decoration: underline;
+      }
+    }
+  }
+}
