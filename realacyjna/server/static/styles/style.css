@@ -91,3 +91,32 @@ table tr:nth-child(even) {
 .nav-table li button:hover {
   text-decoration: underline;
 }
+
+dialog {
+  background: #889488;
+  border: 1px solid #000;
+  border-radius: 5px;
+  position: absolute;
+  margin: auto;
+}
+
+dialog .wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 2rem;
+}
+
+dialog .wrapper button {
+  float: left;
+  margin: 0.5rem 0.5rem 0.5rem auto;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+dialog .wrapper button:hover {
+  background-color: #000;
+  color: #fff;
+}

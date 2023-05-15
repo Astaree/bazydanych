@@ -64,7 +64,7 @@ table {
   }
 }
 
-.nav-table{
+.nav-table {
   display: flex;
   justify-content: start;
   align-items: center;
@@ -72,17 +72,48 @@ table {
   border-bottom: 1px solid #000;
   margin-bottom: 1rem;
 
-  li{
+  li {
     margin-left: 1rem;
     list-style: none;
-    button{
+    button {
       color: blue;
       border: none;
       background-color: transparent;
       cursor: pointer;
-      &:hover{
+      &:hover {
         text-decoration: underline;
       }
     }
+  }
+}
+
+dialog {
+  background: rgb(136, 148, 136);
+  border: 1px solid #000;
+  border-radius: 5px;
+  position: absolute;
+  margin: auto;
+
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    
+    padding: 1rem 2rem;
+
+    button {
+      float: left;
+      margin: 0.5rem 0.5rem 0.5rem auto;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 5px;
+      background-color: #fff;
+      cursor: pointer;
+      &:hover {
+        background-color: #000;
+        color: #fff;
+      }
+    }
+
+    
   }
 }
