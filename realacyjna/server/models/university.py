@@ -14,7 +14,6 @@ class UniversityModel:
         result = self.db.execute(query).fetchall()
         universities = []
         for row in result:
-            print(row.keys())
             university = {'id': row['id'], 'name': row['name'], 'location': row['location'], 'dean_name': row['dean_name'], 'student_count': row['student_count']}
             universities.append(university)
         return universities

@@ -6,10 +6,10 @@ class StudentModel:
         self.connection = sqlite3.connect('baza.db')
         self.cursor = self.connection.cursor()
 
-    def create(self, name, surname, email, date_of_birth, gender, enrollment_date, leave_date):
-        query = 'INSERT INTO student (name, surname, email, date_of_birth, gender, enrollment_date, leave_date) VALUES (?, ?, ?, ?, ?, ?, ? )'
+    def create(self, name, surname, email, date_of_birth, gender):
+        query = 'INSERT INTO student (name, surname, email, date_of_birth, gender) VALUES (?, ?, ?, ?, ?)'
         self.cursor.execute(
-            query, (name, surname, email, date_of_birth, gender, enrollment_date, leave_date))
+            query, (name, surname, email, date_of_birth, gender))
         self.connection.commit()
 
     def read_one(self, id):
@@ -24,8 +24,9 @@ class StudentModel:
                 'email': result[3],
                 'date_of_birth': result[4],
                 'gender': result[5],
-                'enrollment_date': result[6],
-                'leave_date': result[7],
+                'join_date': result[6],  
+                'semester': result[7], 
+                'leave_date': result[8],
             }
             return student
         return None
@@ -43,16 +44,17 @@ class StudentModel:
                 'email': row[3],
                 'date_of_birth': row[4],
                 'gender': row[5],
-                'enrollment_date': row[6],
-                'leave_date': row[7],
+                'join_date': row[6],  
+                'semester': row[7], 
+                'leave_date': row[8],
             }
             students.append(student)
         return students
 
-    def update(self, id, name, surname, email, date_of_birth, gender, enrollment_date, leave_date):
-        query = 'UPDATE student SET name = ?, surname = ?, email = ?, date_of_birth = ?, gender = ?,  enrollment_date = ?, leave_date =? WHERE id = ?'
+    def update(self, id, name, surname, email, date_of_birth, gender):
+        query = 'UPDATE student SET name = ?, surname = ?, email = ?, date_of_birth = ?, gender = ? WHERE id = ?'
         self.cursor.execute(query, (name, surname, email,
-                            date_of_birth, gender, enrollment_date, leave_date, id))
+                            date_of_birth, gender, id))
         self.connection.commit()
 
     def delete(self, id):

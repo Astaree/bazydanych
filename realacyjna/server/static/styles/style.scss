@@ -88,32 +88,49 @@ table {
 }
 
 dialog {
-  background: rgb(136, 148, 136);
+  margin: auto;
   border: 1px solid #000;
   border-radius: 5px;
-  position: absolute;
-  margin: auto;
 
-  .wrapper {
+  .input-wrapper {
     display: flex;
     flex-direction: column;
-    
+    margin-bottom: 1rem;
     padding: 1rem 2rem;
+
+    form{
+      display: flex;
+      flex-direction: column;
+    }
 
     button {
       float: left;
-      margin: 0.5rem 0.5rem 0.5rem auto;
+      align-self: flex-start;
+      margin: 0 0;
       padding: 0.5rem 1rem;
-      border: none;
+      border: 1px solid #000;
       border-radius: 5px;
-      background-color: #fff;
       cursor: pointer;
-      &:hover {
-        background-color: #000;
-        color: #fff;
-      }
     }
 
-    
+    label {
+      margin: 0.5rem 0 0.2rem 0;
+      text-transform: capitalize;
+    }
+
+    input {
+      padding: 0.5rem;
+      border: 1px solid #000;
+      border-radius: 5px;
+      width: 500px;
+    }
+
+    button {
+      margin: 0.5rem 0 0.2rem 0;
+      padding: 0.5rem 1rem;
+      border: 1px solid #000;
+      border-radius: 5px;
+      cursor: pointer;
+    }
   }
 }

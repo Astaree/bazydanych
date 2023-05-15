@@ -7,10 +7,8 @@ class Student(Resource):
     parser.add_argument('name', type=str, required=True, help='Name is a required field.')
     parser.add_argument('surname', type=str, required=True, help='Surname is a required field.')
     parser.add_argument('email', type=str, required=True, help='Email is a required field.')
-    parser.add_argument('date_of_birth', type=Date, required=True, help='Date of birth is a required field.')
-    parser.add_argument('gender', type=str, required=True, help='Gender is a required field.')
-    parser.add_argument('join_date', type=Date, required=True, help='Major is a required field.')
-    parser.add_argument('leave_date', type=Date, required=True, help='Major is a required field.')
+    parser.add_argument('date_of_birth', type=str, required=True, help='Date of birth is a required field.')
+    parser.add_argument('gender', type=int, required=True, help='Gender is a required field.')
 
 
     def __init__(self):
@@ -48,6 +46,20 @@ class StudentList(Resource):
 
     def get(self):
         students = self.model.read_all()
+        if students == []:
+            return {'message': 'No data in table',
+                    'keys':[
+                        'id',
+                        'name',
+                        'surname',
+                        'email',
+                        'date_of_birth',
+                        'gender',
+                        'join_date',
+                        'semester',
+                        'leave_date'
+                    ]
+                    }, 404
         return students, 200
 
     def post(self):
@@ -57,7 +69,6 @@ class StudentList(Resource):
         email = data['email']
         date_of_birth = data['date_of_birth']
         gender = data['gender']
-        major = data['major']
-
-        self.model.create(name, surname, email, date_of_birth, gender, major)
+        
+        self.model.create(name, surname, email, date_of_birth, gender)
         return {'message': 'Student created successfully.'}, 201

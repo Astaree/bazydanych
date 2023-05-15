@@ -40,6 +40,16 @@ class UniversityList(Resource):
 
     def get(self):
         universities = self.model.read_all()
+        if universities == []:
+            return {'message': 'No data in table',
+                    'keys':[
+                        'id',
+                        'name',
+                        'location',
+                        'dean_name',
+                        'student_count'
+                    ]
+                    }, 404
         return universities, 200
 
     def post(self):
