@@ -14,7 +14,8 @@ class UniversityModel:
         result = self.db.execute(query).fetchall()
         universities = []
         for row in result:
-            university = {'id': row['id'], 'name': row['name'], 'location': row['location'], 'dean_name': row['dean_name']}
+            print(row.keys())
+            university = {'id': row['id'], 'name': row['name'], 'location': row['location'], 'dean_name': row['dean_name'], 'student_count': row['student_count']}
             universities.append(university)
         return universities
 
@@ -22,7 +23,7 @@ class UniversityModel:
         query = 'SELECT * FROM university WHERE id = ?'
         result = self.db.execute(query, (id,)).fetchone()
         if result:
-            university = {'id': result['id'], 'name': result['name'], 'location': result['location'], 'dean_name': result['dean_name']}
+            university = {'id': result['id'], 'name': result['name'], 'location': result['location'], 'dean_name': result['dean_name'], 'student_count': row['student_count']}
             return university
         return None
 

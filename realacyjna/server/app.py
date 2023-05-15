@@ -7,6 +7,7 @@ from resources.student import Student, StudentList
 from resources.student_dormitory import StudentDorm, StudentDormList
 from resources.student_major import StudentMajor, StudentMajorList
 from resources.dormitory import Dormitory, DormitoryList
+from resources.index import Index
 
 
 
@@ -15,8 +16,8 @@ api = Api(app)
 
 # Db routes
 # Add routes for the university resource
-api.add_resource(University, '/api/universities/<int:id>')
-api.add_resource(UniversityList, '/api/universities')
+api.add_resource(University, '/api/university/<int:id>')
+api.add_resource(UniversityList, '/api/university')
 
 # Add routes for the Major resource
 api.add_resource(Major, '/api/major/<int:id>')
@@ -40,7 +41,7 @@ api.add_resource(DormitoryList, '/api/dormitories')
 
 
 # client routes
-
+api.add_resource(Index, '/')
 
 
 if __name__ == '__main__':

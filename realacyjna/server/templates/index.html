@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}">
+    <title>Document</title>
+</head>
+
+<body class="white">
+    <div class="wrapper">
+        <div class="header">
+            <p>Select destination</p>
+
+            <ul class="nav">
+                <li><button onclick="getTable('university')">university</button></li>
+
+            </ul>
+
+        </div>
+        <main>
+            <table id="table-data">
+
+            </table>
+        </main>
+    </div>
+</body>
+
+<script src="{{ url_for('static', filename='scripts/script.js') }}" defer></script>
+
+</html>

@@ -6,7 +6,6 @@ class University(Resource):
     parser.add_argument('name', type=str, required=True, help='Name is a required field.')
     parser.add_argument('location', type=str, required=True, help='Location is a required field.')
     parser.add_argument('dean_name', type=str, required=True, help='Dean name is a required field.')
-    
 
     def __init__(self):
         self.model = UniversityModel()
@@ -41,7 +40,8 @@ class UniversityList(Resource):
 
     def get(self):
         universities = self.model.read_all()
-        return {'universities': universities}, 200
+        print(universities)
+        return universities, 200
 
     def post(self):
         data = University.parser.parse_args()
