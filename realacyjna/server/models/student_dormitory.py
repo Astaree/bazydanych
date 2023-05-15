@@ -42,10 +42,19 @@ class StudentDormModel:
             st_dor.append(res)
         return st_dor
 
-    def update(self, id, student_id, dormitory_id, check_in_date, check_out_date):
-        query = 'UPDATE student_dormitory SET student_id = ?, dormitory_id = ?, check_in_date = ?, check_out_date = ? WHERE id = ?'
-        self.cursor.execute(query, (student_id, dormitory_id,
-                            check_in_date, check_out_date, id))
+    def update(self, id, student_id=None, dormitory_id=None, check_in_date=None, check_out_date=None):
+        query = 'UPDATE student_dormitory SET '
+        if student_id is not None:
+            query += 'student_id = ?, '
+        if dormitory_id is not None:
+            query += 'dormitory_id = ?, '
+        if check_in_date is not None:
+            query += 'check_in_date = ?, '
+        if check_out_date is not None:
+            query += 'check_out_date = ?, '
+        query = query.rstrip(', ') + ' WHERE id = ?'
+        values = [value for value in [student_id, dormitory_id, check_in_date, check_out_date, id] if value is not None]
+        self.cursor.execute(query, tuple(values))
         self.connection.commit()
 
     def delete(self, id):

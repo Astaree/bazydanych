@@ -25,8 +25,7 @@ class StudentModel:
                 'date_of_birth': result[4],
                 'gender': result[5],
                 'join_date': result[6],  
-                'semester': result[7], 
-                'leave_date': result[8],
+                'semester': result[7],
             }
             return student
         return None
@@ -45,17 +44,28 @@ class StudentModel:
                 'date_of_birth': row[4],
                 'gender': row[5],
                 'join_date': row[6],  
-                'semester': row[7], 
-                'leave_date': row[8],
+                'semester': row[7],
             }
             students.append(student)
         return students
 
-    def update(self, id, name, surname, email, date_of_birth, gender):
-        query = 'UPDATE student SET name = ?, surname = ?, email = ?, date_of_birth = ?, gender = ? WHERE id = ?'
-        self.cursor.execute(query, (name, surname, email,
-                            date_of_birth, gender, id))
+    def update(self, id, name=None, surname=None, email=None, date_of_birth=None, gender=None):
+        query = 'UPDATE student SET '
+        if name:
+            query += 'name = ?, '
+        if surname:
+            query += 'surname = ?, '
+        if email:
+            query += 'email = ?, '
+        if date_of_birth:
+            query += 'date_of_birth = ?, '
+        if gender:
+            query += 'gender = ?, '
+        query = query.rstrip(', ') + ' WHERE id = ?'
+        values = tuple(filter(None, [name, surname, email, date_of_birth, gender, id]))
+        self.cursor.execute(query, values)
         self.connection.commit()
+
 
     def delete(self, id):
         query = 'DELETE FROM student WHERE id = ?'

@@ -43,6 +43,14 @@ class StudentMajorList(Resource):
     
     def get(self):
         student_faculties = self.model.read_all()
+        if student_faculties == []:
+            return {'message': 'No data in table',
+                    'keys':[
+                        'id',
+                        'student_id',
+                        'major_id'
+                    ]
+                    }, 404
         return student_faculties, 200 
     
     def post(self, id):

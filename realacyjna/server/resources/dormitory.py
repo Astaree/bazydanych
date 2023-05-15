@@ -54,6 +54,19 @@ class DormitoryList(Resource):
     
     def get(self):
         dormitories = self.model.read_all()
+        if dormitories == []:
+            return {'message': 'No data in table',
+                    'keys':[
+                        'id',
+                        'name',
+                        'address',
+                        'city',
+                        'state',
+                        'zip',
+                        'capacity',
+                        'occupancy'
+                    ]
+                    }, 404
         return dormitories, 200
 
 def post(self):

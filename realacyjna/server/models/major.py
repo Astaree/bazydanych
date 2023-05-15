@@ -22,9 +22,23 @@ class MajorModel:
         if result:
             return {'id': result[0], 'name': result[1], 'department': result[2], 'email': result[3], 'phone': result[4], 'office': result[5]}
 
-    def update(self, id, name, department, email, phone, office, hire_date):
-        query = 'UPDATE Major SET name = ?, department = ?, email = ?, phone = ?, office = ? WHERE id = ?'
-        self.db.execute(query, (name, department, email, phone, office, id))
+    def update(self, id, name=None, department=None, email=None, phone=None, office=None, hire_date=None):
+        query = 'UPDATE Major SET '
+        if name:
+            query += 'name = ?, '
+        if department:
+            query += 'department = ?, '
+        if email:
+            query += 'email = ?, '
+        if phone:
+            query += 'phone = ?, '
+        if office:
+            query += 'office = ?, '
+        if hire_date:
+            query += 'hire_date = ?, '
+        query = query.rstrip(', ') + ' WHERE id = ?'
+        values = tuple(filter(None, [name, department, email, phone, office, hire_date, id]))
+        self.db.execute(query, values)
         self.db.commit()
 
     def delete(self, id):

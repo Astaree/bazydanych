@@ -57,7 +57,6 @@ class StudentList(Resource):
                         'gender',
                         'join_date',
                         'semester',
-                        'leave_date'
                     ]
                     }, 404
         return students, 200

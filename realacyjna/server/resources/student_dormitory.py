@@ -43,6 +43,16 @@ class StudentDormList(Resource):
     
     def get(self):
         stud_dorm = self.model.read_all()
+        if stud_dorm == []:
+            return {'message': 'No data in table',
+                    'keys':[
+                        'id',
+                        'student_id',
+                        'dormitory_id',
+                        'check_in_date',
+                        'check_out_date'
+                    ]
+                    }, 404
         return stud_dorm, 200
     
     def post(self):

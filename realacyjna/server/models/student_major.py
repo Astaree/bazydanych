@@ -37,9 +37,15 @@ class StudentMajorModel:
             st_maj.append(res)
         return st_maj
 
-    def update(self, id, student_id, major_id):
-        query = 'UPDATE student_major SET student_id = ?, major_id = ? WHERE id = ?'
-        self.cursor.execute(query, (student_id, major_id, id))
+    def update(self, id, student_id=None, major_id=None):
+        query = 'UPDATE student_major SET '
+        if student_id:
+            query += 'student_id = ?, '
+        if major_id:
+            query += 'major_id = ?, '
+        query = query.rstrip(', ') + ' WHERE id = ?'
+        values = tuple(filter(None, [student_id, major_id, id]))
+        self.cursor.execute(query, values)
         self.connection.commit()
 
     def delete(self, id):

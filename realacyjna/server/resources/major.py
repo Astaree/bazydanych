@@ -51,6 +51,17 @@ class MajorList(Resource):
 
     def get(self):
         majors = self.model.read_all()
+        if majors == []:
+            return {'message': 'No data in table',
+                    'keys':[
+                        'id',
+                        'name',
+                        'department',
+                        'email',
+                        'phone',
+                        'office'
+                    ]
+                    }, 404
         return majors, 200
 
 def post(self):
