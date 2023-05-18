@@ -1,4 +1,5 @@
 import sqlite3
+from database import Database
 
 
 class StudentModel:
@@ -49,6 +50,46 @@ class StudentModel:
             students.append(student)
         return students
 
+    def read_by_query(self, name=None, surname=None, email=None, date_of_birth=None,
+                      gender=None, join_date=None, semester=None):
+        query = 'SELECT * FROM student'
+        conditions = []
+        values = []
+        if name:
+            conditions.append('name = ?')
+            values.append(name)
+        if surname:
+            conditions.append('surname = ?')
+            values.append(surname)
+        if email:
+            conditions.append('email = ?')
+            values.append(email)
+        if date_of_birth:
+            conditions.append('date_of_birth = ?')
+            values.append(date_of_birth)
+        if gender:
+            conditions.append('gender = ?')
+            values.append(gender)
+        if join_date:
+            conditions.append('join_date = ?')
+            values.append(join_date)
+        if semester:
+            conditions.append('semester = ?')
+            values.append(semester)
+        if conditions:
+            query += ' WHERE ' + ' AND '.join(conditions)
+        result = self.db.execute(query, values).fetchone()
+        if result:
+            student = {'id': result[0],
+                'name': result[1],
+                'surname': result[2],
+                'email': result[3],
+                'date_of_birth': result[4],
+                'gender': result[5],
+                'join_date': result[6],
+                'semester': result[7],}
+            return student
+        return None
     def update(self, id, name=None, surname=None, email=None, date_of_birth=None, gender=None):
         query = 'UPDATE student SET '
         if name:

@@ -1,4 +1,5 @@
 import sqlite3
+from database import Database
 
 
 class DormitoryModel:
@@ -25,6 +26,42 @@ class DormitoryModel:
         if result:
             return {'id': result[0], 'name': result[1], 'address': result[2], 'city': result[3], 'state': result[4], 'zip': result[5],
                     'capacity': result[6], 'occupancy': result[7]}
+
+    def read_by_query(self, name=None, adress=None, city=None, state=None, zip=None, capacity=None,
+                      occupancy=None):
+        query = 'SELECT * FROM dormitory'
+        conditions = []
+        values = []
+        if name:
+            conditions.append('name = ?')
+            values.append(name)
+        if adress:
+            conditions.append('adress = ?')
+            values.append(adress)
+        if city:
+            conditions.append('city = ?')
+            values.append(city)
+        if state:
+            conditions.append('state = ?')
+            values.append(state)
+        if zip:
+            conditions.append('zip = ?')
+            values.append(zip)
+        if capacity:
+            conditions.append('capacity = ?')
+            values.append(capacity)
+        if occupancy:
+            conditions.append(occupancy)
+            values.append(occupancy)
+        if conditions:
+            query += ' WHERE ' + ' AND '.join(conditions)
+        result = self.db.execute(query, values).fetchone()
+        if result:
+            dormitory = {'id': result[0], 'name': result[1], 'address': result[2], 'city': result[3], 'state': result[4], 'zip': result[5],
+                         'capacity': result[6], 'occupancy': result[7]}
+            return dormitory
+        return None
+
 
     def update(self, id, name=None, address=None, city=None, state=None, zip=None, capacity=None, occupancy=None):
         query = 'UPDATE dormitory SET '
