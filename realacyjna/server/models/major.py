@@ -22,6 +22,34 @@ class MajorModel:
         if result:
             return {'id': result[0], 'name': result[1], 'department': result[2], 'email': result[3], 'phone': result[4], 'office': result[5]}
 
+    def read_by_query(self, name=None, department=None, email=None, phone=None, office=None):
+        query = 'SELECT * FROM major'
+        conditions = []
+        values = []
+        if name:
+            conditions.append('name = ?')
+            values.append(name)
+        if department:
+            conditions.append('department = ?')
+            values.append(department)
+        if email:
+            conditions.append('email = ?')
+            values.append(email)
+        if phone:
+            conditions.append('phone = ?')
+            values.append(phone)
+        if office:
+            conditions.append('office = ?')
+            values.append(office)
+        if conditions:
+            query += ' WHERE ' + ' AND '.join(conditions)
+        result = self.db.execute(query, values).fetchone()
+        if result:
+            major = {'id': result[0], 'name': result[1], 'department': result[2], 'email': result[3], 'phone': result[4],
+                     'office': result[5]}
+            return major
+        return None
+
     def update(self, id, name=None, department=None, email=None, phone=None, office=None, hire_date=None):
         query = 'UPDATE Major SET '
         if name:

@@ -1,4 +1,5 @@
 import sqlite3
+from database import Database
 
 
 class StudentDormModel:
@@ -41,6 +42,35 @@ class StudentDormModel:
             }
             st_dor.append(res)
         return st_dor
+
+    def read_by_query(self, student_id=None, dormitory_id=None, check_in_date=None, check_out_date=None):
+        query = 'SELECT * FROM student_dormitory'
+        conditions = []
+        values = []
+        if student_id:
+            conditions.append('student_id = ?')
+            values.append(student_id)
+        if dormitory_id:
+            conditions.append('dormitory_id = ?')
+            values.append(dormitory_id)
+        if check_in_date:
+            conditions.append('check_in_date = ?')
+            values.append(check_in_date)
+        if check_out_date:
+            conditions.append('check_out_date = ?')
+            values.append(check_out_date)
+        if conditions:
+            query += ' WHERE ' + ' AND '.join(conditions)
+        result = self.db.execute(query, values).fetchone()
+        if result:
+            student_dormitory = {'id': result['id'], 'student_id': result['student_id'],
+                                 'dormitory_id': result['dormitory_id'], 'check_in_date': result['check_in_date'],
+                                 'check_out_date': result['check_out_date']}
+            return student_dormitory
+        return None
+
+
+
 
     def update(self, id, student_id=None, dormitory_id=None, check_in_date=None, check_out_date=None):
         query = 'UPDATE student_dormitory SET '
