@@ -1,3 +1,4 @@
+from flask import request
 from flask_restful import Resource, reqparse
 from models.student_dormitory import StudentDormModel
 
@@ -66,3 +67,28 @@ class StudentDormList(Resource):
         
         self.model.create(student_id, dormitory_id, check_in_date, check_out_date)
         return {'message': 'Student in Dormitory created successfully'}, 201
+
+class StudentDormListQuarry(Resource):
+    def __init__(self):
+        self.model = StudentDormModel()
+    
+    def get(self):
+        
+        id = request.args.get('id')
+        student_id = request.args.get('student_id')
+        dormitory_id = request.args.get('dormitory_id')
+        check_in_date = request.args.get('check_in_date')
+        check_out_date = request.args.get('check_out_date')
+        
+        stud_dorm = self.model.read_by_query(id, student_id, dormitory_id, check_in_date, check_out_date)
+        if stud_dorm == []:
+            return {'message': 'No data in table',
+                    'keys':[
+                        'id',
+                        'student_id',
+                        'dormitory_id',
+                        'check_in_date',
+                        'check_out_date'
+                    ]
+                    }, 404
+        return stud_dorm, 200

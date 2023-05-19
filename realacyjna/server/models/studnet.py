@@ -25,7 +25,7 @@ class StudentModel:
                 'email': result[3],
                 'date_of_birth': result[4],
                 'gender': result[5],
-                'join_date': result[6],  
+                'join_date': result[6],
                 'semester': result[7],
             }
             return student
@@ -44,52 +44,52 @@ class StudentModel:
                 'email': row[3],
                 'date_of_birth': row[4],
                 'gender': row[5],
-                'join_date': row[6],  
+                'join_date': row[6],
                 'semester': row[7],
             }
             students.append(student)
         return students
 
-    def read_by_query(self, name=None, surname=None, email=None, date_of_birth=None,
+    def read_by_query(self, id=None, name=None,
+                      surname=None, email=None, date_of_birth=None,
                       gender=None, join_date=None, semester=None):
-        query = 'SELECT * FROM student'
-        conditions = []
-        values = []
+        query = 'SELECT * FROM student WHERE '
+        if id:
+            query += 'id = ? AND '
         if name:
-            conditions.append('name = ?')
-            values.append(name)
+            query += 'name = ? AND '
         if surname:
-            conditions.append('surname = ?')
-            values.append(surname)
+            query += 'surname = ? AND '
         if email:
-            conditions.append('email = ?')
-            values.append(email)
+            query += 'email = ? AND '
         if date_of_birth:
-            conditions.append('date_of_birth = ?')
-            values.append(date_of_birth)
+            query += 'date_of_birth = ? AND '
         if gender:
-            conditions.append('gender = ?')
-            values.append(gender)
+            query += 'gender = ? AND '
         if join_date:
-            conditions.append('join_date = ?')
-            values.append(join_date)
+            query += 'join_date = ? AND '
         if semester:
-            conditions.append('semester = ?')
-            values.append(semester)
-        if conditions:
-            query += ' WHERE ' + ' AND '.join(conditions)
-        result = self.db.execute(query, values).fetchone()
-        if result:
-            student = {'id': result[0],
-                'name': result[1],
-                'surname': result[2],
-                'email': result[3],
-                'date_of_birth': result[4],
-                'gender': result[5],
-                'join_date': result[6],
-                'semester': result[7],}
-            return student
-        return None
+            query += 'semester = ? AND '
+        query = query.rstrip('AND ')
+        values = tuple(filter(
+            None, [id, name, surname, email, date_of_birth,
+                   gender, join_date, semester]))
+        result = self.cursor.execute(query, values).fetchall()
+        students = []
+        for row in result:
+            student = {
+                'id': row[0],
+                'name': row[1],
+                'surname': row[2],
+                'email': row[3],
+                'date_of_birth': row[4],
+                'gender': row[5],
+                'join_date': row[6],
+                'semester': row[7],
+            }
+            students.append(student)
+        return students
+
     def update(self, id, name=None, surname=None, email=None, date_of_birth=None, gender=None):
         query = 'UPDATE student SET '
         if name:
@@ -103,10 +103,10 @@ class StudentModel:
         if gender:
             query += 'gender = ?, '
         query = query.rstrip(', ') + ' WHERE id = ?'
-        values = tuple(filter(None, [name, surname, email, date_of_birth, gender, id]))
+        values = tuple(
+            filter(None, [name, surname, email, date_of_birth, gender, id]))
         self.cursor.execute(query, values)
         self.connection.commit()
-
 
     def delete(self, id):
         query = 'DELETE FROM student WHERE id = ?'

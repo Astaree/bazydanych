@@ -1,3 +1,4 @@
+from flask import request
 from flask_restful import Resource, reqparse
 from models.student_major import StudentMajorModel
 
@@ -62,3 +63,17 @@ class StudentMajorList(Resource):
 
         self.model.create(student_id, major_id)
         return {'message': 'Student Major created successfully'}, 201
+    
+class StudentMajorListQuarry(Resource):
+    def __init__(self):
+        self.model = StudentMajorModel()
+    
+    def get(self):
+        
+        student_id = request.args.get('student_id')
+        major_id = request.args.get('major_id')
+        
+        student_major = self.model.read_one_by_student_id_and_major_id(student_id, major_id)
+        if student_major:
+            return student_major, 200
+        return {'message': 'Student Major not found'}, 404

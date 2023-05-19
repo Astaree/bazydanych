@@ -41,50 +41,50 @@ function getTable(table) {
                 currTableKeys = keys;
             }
             //update search bar with the new keys
-            {
-                const find_table = document.getElementById('find_table');
-                find_table.innerHTML = '';
-                find_table.appendChild(document.createElement('tr'));
-                keys.forEach(key => {
-                    find_table.lastChild.appendChild(document.createElement('th'));
-                    find_table.lastChild.lastChild.appendChild(document.createElement('input'));
-                    find_table.lastChild.lastChild.lastChild.setAttribute('type', 'text');
-                    find_table.lastChild.lastChild.lastChild.setAttribute('placeholder', key);
-                    find_table.lastChild.lastChild.lastChild.setAttribute('name', key);
-                }
-                );
+
+            const find_table = document.getElementById('find_table');
+            find_table.innerHTML = '';
+            find_table.appendChild(document.createElement('tr'));
+            keys.forEach(key => {
                 find_table.lastChild.appendChild(document.createElement('th'));
-                find_table.lastChild.lastChild.appendChild(document.createElement('button'));
-                find_table.lastChild.lastChild.lastChild.innerHTML = "Find";
-                find_table.lastChild.lastChild.lastChild.setAttribute('onclick', `filter(${table})`);
+                find_table.lastChild.lastChild.appendChild(document.createElement('input'));
+                find_table.lastChild.lastChild.lastChild.setAttribute('type', 'text');
+                find_table.lastChild.lastChild.lastChild.setAttribute('placeholder', key);
+                find_table.lastChild.lastChild.lastChild.setAttribute('name', key);
             }
+            );
+            find_table.lastChild.appendChild(document.createElement('th'));
+            find_table.lastChild.lastChild.appendChild(document.createElement('button'));
+            find_table.lastChild.lastChild.lastChild.innerHTML = "Find";
+            find_table.lastChild.lastChild.lastChild.setAttribute('onclick', `filter('${table}')`);
+
             // update the content table headers with the new keys and 
             //fill the table with the  data
-            {
-                const tableDataElem = document.getElementById('table-data');
-                tableDataElem.innerHTML = '';
+
+            const tableDataElem = document.getElementById('table-data');
+            tableDataElem.innerHTML = '';
+            tableDataElem.appendChild(document.createElement('tr'));
+
+            keys.forEach(key => {
+                tableDataElem.lastChild.appendChild(document.createElement('th'));
+                tableDataElem.lastChild.lastChild.innerHTML = key;
+            });
+
+            if (data.message == "No data in table") {
                 tableDataElem.appendChild(document.createElement('tr'));
+                tableDataElem.lastChild.appendChild(document.createElement('td'));
+                tableDataElem.lastChild.lastChild.innerHTML = "No data in table";
 
+                return;
+            };
+            data.forEach(row => {
+                tableDataElem.appendChild(document.createElement('tr'));
                 keys.forEach(key => {
-                    tableDataElem.lastChild.appendChild(document.createElement('th'));
-                    tableDataElem.lastChild.lastChild.innerHTML = key;
-                });
-
-                if (data.message == "No data in table") {
-                    tableDataElem.appendChild(document.createElement('tr'));
                     tableDataElem.lastChild.appendChild(document.createElement('td'));
-                    tableDataElem.lastChild.lastChild.innerHTML = "No data in table";
-
-                    return;
-                };
-                data.forEach(row => {
-                    tableDataElem.appendChild(document.createElement('tr'));
-                    keys.forEach(key => {
-                        tableDataElem.lastChild.appendChild(document.createElement('td'));
-                        tableDataElem.lastChild.lastChild.innerHTML = row[key];
-                    });
+                    tableDataElem.lastChild.lastChild.innerHTML = row[key];
                 });
-            }
+            });
+
 
         })
         .catch(error => console.error(error));
@@ -149,7 +149,6 @@ function createNew(table) {
     let form = document.getElementById('input_form');
     let data = {};
     currTableKeys.forEach(key => {
-        console.log(key);
         if (key == "id" || key == "student_count" || key == "join_date" || key == "semester" || key == "leave_date") return;
         data[key] = form[key].value;
     });
@@ -213,6 +212,50 @@ function updateElement(table) {
 }
 
 function filter(table) {
+    let form_table = document.getElementById('find_table');
+    let data = {};
+    
+    form_table.childNodes[0].childNodes.forEach(node => {
+        if (node.childNodes[0].value != "") data[node.childNodes[0].name] = node.childNodes[0].value;
+    });
+    if (Object.keys(data).length == 0) {
+        getTable(table);
+        return;
+    }
+    let quary = new URLSearchParams(data).toString();
+    fetch(`/api/q${table}?${quary}`,
+        {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }
+    )
+        .then(response => response.json())
+        .then(data => {
+            const tableDataElem = document.getElementById('table-data');
+            tableDataElem.innerHTML = '';
+            tableDataElem.appendChild(document.createElement('tr'));
+            currTableKeys.forEach(key => {
+                tableDataElem.lastChild.appendChild(document.createElement('th'));
+                tableDataElem.lastChild.lastChild.innerHTML = key;
+            });
+            if (data.message == "No data in table") {
+                tableDataElem.appendChild(document.createElement('tr'));
+                tableDataElem.lastChild.appendChild(document.createElement('td'));
+                tableDataElem.lastChild.lastChild.innerHTML = "No data in table";
 
+                return;
+            };
+            data.forEach(row => {
+                tableDataElem.appendChild(document.createElement('tr'));
+                currTableKeys.forEach(key => {
+                    tableDataElem.lastChild.appendChild(document.createElement('td'));
+                    tableDataElem.lastChild.lastChild.innerHTML = row[key];
+                });
+            });
+        }
+        )
+    
 }
 

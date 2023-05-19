@@ -1,4 +1,5 @@
 from sqlite3 import Date
+from flask import request
 from flask_restful import Resource, reqparse
 from models.major import MajorModel
 
@@ -64,7 +65,7 @@ class MajorList(Resource):
                     }, 404
         return majors, 200
 
-def post(self):
+    def post(self):
 
         data = Major.parser.parse_args()
         name = data['name']
@@ -79,3 +80,40 @@ def post(self):
             return {'message': 'Major already exists.'}, 400
         self.model.create(name, department, email, phone, office)
         return {'message': 'Major created successfully.'}, 201
+    
+class MajorQuery(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument('id', type=int, help='Failed to parse the id.')
+    parser.add_argument('name', type=str, help='Failed to parse the name.')
+    parser.add_argument('department', type=str, help='Failed to parse the department.')
+    parser.add_argument('email', type=str, help='Failed to parse the email.')
+    parser.add_argument('phone', type=str, help='Failed to parse the phone.')
+    parser.add_argument('office', type=str, help='Failed to parse the office.')
+
+    def __init__(self):
+        self.model = MajorModel()
+
+    # GET /major_query
+    def get(self):
+        
+        id = request.args.get('id')
+        name = request.args.get('name')
+        department = request.args.get('department')
+        email = request.args.get('email')
+        phone = request.args.get('phone')
+        office = request.args.get('office')
+        
+
+        majors = self.model.read_by_query(id, name, department, email, phone, office)
+        if majors == []:
+            return {'message': 'No data in table',
+                    'keys': [
+                        'id',
+                        'name',
+                        'department',
+                        'email',
+                        'phone',
+                        'office'
+                    ]
+                    }, 404
+        return majors, 200

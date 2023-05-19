@@ -1,4 +1,6 @@
+import logging
 from database import Database
+
 
 class UniversityModel:
     def __init__(self):
@@ -14,7 +16,8 @@ class UniversityModel:
         result = self.db.execute(query).fetchall()
         universities = []
         for row in result:
-            university = {'id': row['id'], 'name': row['name'], 'location': row['location'], 'dean_name': row['dean_name'], 'student_count': row['student_count']}
+            university = {'id': row['id'], 'name': row['name'], 'location': row['location'],
+                          'dean_name': row['dean_name'], 'student_count': row['student_count']}
             universities.append(university)
         return universities
 
@@ -22,30 +25,39 @@ class UniversityModel:
         query = 'SELECT * FROM university WHERE id = ?'
         result = self.db.execute(query, (id,)).fetchone()
         if result:
-            university = {'id': result['id'], 'name': result['name'], 'location': result['location'], 'dean_name': result['dean_name'], 'student_count': result['student_count']}
+            university = {'id': result['id'], 'name': result['name'], 'location': result['location'],
+                          'dean_name': result['dean_name'], 'student_count': result['student_count']}
             return university
         return None
 
-    def read_by_query(self, name=None, location=None, dean_name=None):
-        query = 'SELECT * FROM university'
-        conditions = []
-        values = []
+    def read_by_query(self, id=None, name=None, location=None,
+                      dean_name=None, student_count=None):
+        query = 'SELECT * FROM university WHERE '
+        if id:
+            query += 'id = ? AND '
         if name:
-            conditions.append('name = ?')
-            values.append(name)
+            query += 'name = ? AND '
         if location:
-            conditions.append('location = ?')
-            values.append(location)
+            query += 'location = ? AND '
         if dean_name:
-            conditions.append('dean_name = ?')
-            values.append(dean_name)
-        if conditions:
-            query += ' WHERE ' + ' AND '.join(conditions)
-        result = self.db.execute(query, values).fetchone()
-        if result:
-            university = {'id': result['id'], 'name': result['name'], 'location': result['location'], 'dean_name': result['dean_name'], 'student_count': result['student_count']}
-            return university
-        return None
+            query += 'dean_name = ? AND '
+        if student_count:
+            query += 'student_count = ? AND '
+        query = query.rstrip('AND ')
+        values = tuple(
+            filter(None, [id, name, location, dean_name, student_count]))
+        result = self.db.execute(query, values).fetchall()
+        universities = []
+        for row in result:
+            university = {
+                'id': row['id'],
+                'name': row['name'],
+                'location': row['location'],
+                'dean_name': row['dean_name'],
+                'student_count': row['student_count']
+            }
+            universities.append(university)
+        return universities
 
     def update(self, id, name=None, location=None, dean_name=None):
         query = 'UPDATE university SET '

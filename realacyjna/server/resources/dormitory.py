@@ -1,3 +1,4 @@
+from flask import request
 from flask_restful import Resource, reqparse
 from models.dormitory import DormitoryModel
 
@@ -15,13 +16,14 @@ class Dormitory(Resource):
     def __init__(self):
         self.model = DormitoryModel()
     
+    # GET /dormitory/<id>
     def get(self, id):
         dormitory = self.model.read_one(id)
         if dormitory:
             return dormitory, 200
         return {'message': 'Dormitory not found'}, 404
     
-    
+    # PUT /dormitory/<id>
     def put(self, id):
         data = Dormitory.parser.parse_args()
         name = data['name']
@@ -40,6 +42,7 @@ class Dormitory(Resource):
         self.model.create(name, address, city, state, zip, capacity, occupancy)
         return {'message': 'Dormitory created successfully'}, 201
     
+    # DELETE /dormitory/<id>
     def delete(self, id):
         dormitory = self.model.read_one(id)
         if dormitory:
@@ -52,6 +55,7 @@ class DormitoryList(Resource):
     def __init__(self):
         self.model = DormitoryModel()
     
+    # GET /dormitory
     def get(self):
         dormitories = self.model.read_all()
         if dormitories == []:
@@ -69,15 +73,24 @@ class DormitoryList(Resource):
                     }, 404
         return dormitories, 200
 
-def post(self):
-        data = Dormitory.parser.parse_args()
-        name = data['name']
-        address = data['address']
-        city = data['city']
-        state = data['state']
-        zip = data['zip']
-        capacity = data['capacity']
-        occupancy = data['occupancy']
 
-        self.model.create(name, address, city, state, zip, capacity, occupancy)
-        return {'message': 'Dormitory created successfully'}, 201
+class DormitoryListQuarry(Resource):
+    def __init__(self):
+        self.model = DormitoryModel()
+        
+    # GET /dormitory
+    def get(self):
+            
+        name = request.args.get('name')
+        address = request.args.get('address')
+        city = request.args.get('city')
+        state = request.args.get('state')
+        zip = request.args.get('zip')
+        capacity = request.args.get('capacity')
+        occupancy = request.args.get('occupancy')
+        
+        dormitory = self.model.read_by_query(name, address, city, state, zip, capacity, occupancy)
+        if dormitory == []:
+            return {'message': 'No data in table'}, 404
+        return dormitory, 200
+        

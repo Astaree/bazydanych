@@ -29,39 +29,40 @@ class DormitoryModel:
 
     def read_by_query(self, name=None, adress=None, city=None, state=None, zip=None, capacity=None,
                       occupancy=None):
-        query = 'SELECT * FROM dormitory'
-        conditions = []
-        values = []
+        query = 'SELECT * FROM dormitory WHERE '
         if name:
-            conditions.append('name = ?')
-            values.append(name)
+            query += 'name = ? AND '
         if adress:
-            conditions.append('adress = ?')
-            values.append(adress)
+            query += 'address = ? AND '
         if city:
-            conditions.append('city = ?')
-            values.append(city)
+            query += 'city = ? AND '
         if state:
-            conditions.append('state = ?')
-            values.append(state)
+            query += 'state = ? AND '
         if zip:
-            conditions.append('zip = ?')
-            values.append(zip)
+            query += 'zip = ? AND '
         if capacity:
-            conditions.append('capacity = ?')
-            values.append(capacity)
+            query += 'capacity = ? AND '
         if occupancy:
-            conditions.append(occupancy)
-            values.append(occupancy)
-        if conditions:
-            query += ' WHERE ' + ' AND '.join(conditions)
-        result = self.db.execute(query, values).fetchone()
-        if result:
-            dormitory = {'id': result[0], 'name': result[1], 'address': result[2], 'city': result[3], 'state': result[4], 'zip': result[5],
-                         'capacity': result[6], 'occupancy': result[7]}
-            return dormitory
-        return None
-
+            query += 'occupancy = ? AND '
+        query = query.rstrip(' AND ')
+        values = tuple(
+            filter(None, [name, adress, city, state, zip, capacity, occupancy]))
+        cursor = self.db.execute(query, values)
+        result = cursor.fetchall()
+        dorms = []
+        for row in result:
+            dorm = {
+                'id': row[0],
+                'name': row[1],
+                'address': row[2],
+                'city': row[3],
+                'state': row[4],
+                'zip': row[5],
+                'capacity': row[6],
+                'occupancy': row[7]
+            }
+            dorms.append(dorm)
+        return dorms
 
     def update(self, id, name=None, address=None, city=None, state=None, zip=None, capacity=None, occupancy=None):
         query = 'UPDATE dormitory SET '
