@@ -3,6 +3,7 @@ from flask_restful import Api
 
 from resources.university import University, UniversityList, UniversityQuery
 from resources.major import Major, MajorList, MajorQuery
+from resources.university_major import UniversityMajor, UniversityMajorList, UniversityMajorListQuarry
 from resources.student import Student, StudentList, StudentQuary
 from resources.student_dormitory import StudentDorm, StudentDormList, StudentDormListQuarry
 from resources.student_major import StudentMajor, StudentMajorList, StudentMajorListQuarry
@@ -46,6 +47,10 @@ api.add_resource(Dormitory, '/api/dormitories/<int:id>')
 api.add_resource(DormitoryList, '/api/dormitories')
 api.add_resource(DormitoryListQuarry, '/api/qdormitories')
 
+# Add routes for the Major in university resource
+api.add_resource(UniversityMajor, '/api/university_major/<int:id>')
+api.add_resource(UniversityMajorList, '/api/university_major')
+api.add_resource(UniversityMajorListQuarry, '/api/quniversity_major')
 
 # client routes
 api.add_resource(Index, '/')

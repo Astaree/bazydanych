@@ -1,4 +1,5 @@
 import sqlite3
+import re
 from database import Database
 
 
@@ -6,10 +7,9 @@ class DormitoryModel:
     def __init__(self):
         self.db = sqlite3.connect('baza.db')
 
-    def create(self, name, address, city, state, zip, capacity, occupancy):
-        query = 'INSERT INTO dormitory (name, address, city, state, zip, capacity, occupancy) VALUES (?, ?, ?, ?, ?, ?)'
-        self.db.execute(query, (name, address, city,
-                        state, zip, capacity, occupancy))
+    def create(self, name, address, city, state, zip, capacity=1, occupancy=1):
+        query = 'INSERT INTO dormitory (name, address, city, state, zip, capacity, occupancy) VALUES (?, ?, ?, ?, ?, ?, ?)'
+        self.db.execute(query, (name, address, city, state, zip, capacity, occupancy))
         self.db.commit()
 
     def read_all(self):

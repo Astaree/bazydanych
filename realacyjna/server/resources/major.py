@@ -44,7 +44,8 @@ class Major(Resource):
             self.model.delete(id)
             return {'message': 'Major deleted successfully.'}, 200
         return {'message': 'Major not found.'}, 404
-
+    
+    
 
 class MajorList(Resource):
     def __init__(self):
@@ -66,20 +67,16 @@ class MajorList(Resource):
         return majors, 200
 
     def post(self):
-
-        data = Major.parser.parse_args()
-        name = data['name']
-        department = data['department']
-        email = data['email']
-        phone = data['phone']
-        office = data['office']
-
-        # Check if the Major already exists
-        Major = self.model.read_one_by_name(name)
-        if Major:
-            return {'message': 'Major already exists.'}, 400
-        self.model.create(name, department, email, phone, office)
-        return {'message': 'Major created successfully.'}, 201
+            data = Major.parser.parse_args()
+            name = data['name']
+            department = data['department']
+            email = data['email']
+            phone = data['phone']
+            office = data['office']
+            
+            self.model.create(name, department, email, phone, office)
+            return {'message': 'Major created successfully.'}, 201
+    
     
 class MajorQuery(Resource):
     parser = reqparse.RequestParser()

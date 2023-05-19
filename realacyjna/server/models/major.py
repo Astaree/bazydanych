@@ -5,7 +5,7 @@ class MajorModel:
         self.db = sqlite3.connect('baza.db')
 
     def create(self, name, department, email, phone, office):
-        query = 'INSERT INTO Major (name, department, email, phone, office) VALUES (?, ?, ?, ?, ?, ?)'
+        query = 'INSERT INTO Major (name, department, email, phone, office) VALUES (?, ?, ?, ?, ?)'
         self.db.execute(query, (name, department, email, phone, office))
         self.db.commit()
 

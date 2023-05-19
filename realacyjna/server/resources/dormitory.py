@@ -8,7 +8,7 @@ class Dormitory(Resource):
     parser.add_argument('address', type=str, required=True, help='Address is a required field')
     parser.add_argument('city', type=str, required=True, help='City is a required field')
     parser.add_argument('state', type=str, required=True, help='State is a required field')
-    parser.add_argument('zip', type=str, required=True, help='Zip is a required field')
+    parser.add_argument('zip', type=int, required=True, help='Zip is a required field')
     parser.add_argument('capacity', type=int)
     parser.add_argument('occupancy', type=int)
 
@@ -72,6 +72,19 @@ class DormitoryList(Resource):
                     ]
                     }, 404
         return dormitories, 200
+    
+    def post(self):
+        data = Dormitory.parser.parse_args()
+        name = data['name']
+        address = data['address']
+        city = data['city']
+        state = data['state']
+        zip = data['zip']
+        capacity = data['capacity']
+        occupancy = data['occupancy']
+        
+        self.model.create(name, address, city, state, zip, capacity, occupancy)
+        return {'message': 'Dormitory created successfully'}, 201
 
 
 class DormitoryListQuarry(Resource):
