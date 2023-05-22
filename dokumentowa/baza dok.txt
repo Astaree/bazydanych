@@ -1,0 +1,67 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+https://dbdiagram.io/d
+
+Table Client{
+  id integer [primary key]
+  name string
+  surname string
+  address string
+  phone int
+  
+}
+
+Table Meal{
+  id int
+  price int
+  AverageTime int
+
+  Ingredients integer
+  Picture integer
+}
+
+Table Picture{
+  id integer [primary key]
+  
+  buffer buffer
+  alt string
+}
+
+Table Ingredients{
+  id integer [primary key]
+  name string
+  count string
+}
+
+Table Order{
+  id int [primary key]
+  Meal int
+  Drinks int
+
+  ClientID int
+  DateOfOrder Date
+  DateOfDelivered Date
+}
+
+Table Drinks{
+  id integer [primary key]
+  type int
+  price int
+  amount int
+}
+
+
+
+Ref: Order.ClientID > Client.id
+Ref: Ingredients.id <> Meal.Ingredients
+Ref: Drinks.id <> Order.Drinks
+Ref: Meal.id <> Order.Drinks
+Ref: Picture.id < Meal.Picture
+
+//kolekcje:
+
+//klient -< zamówienie
+//posiłek -< zdjęcia
+//drinki
+//skłaniki -<

@@ -19,7 +19,7 @@ class StudentDorm(Resource):
         return {'message': 'Student in Dormitory not found'}, 404
     
     def put(self,id):
-        data = StudentDormModel.parser.parse_args()
+        data = StudentDorm.parser.parse_args()
         student_id = data['student_id']
         dormitory_id = data['dormitory_id']
         check_in_date = data['check_in_date']
@@ -57,15 +57,16 @@ class StudentDormList(Resource):
         return stud_dorm, 200
     
     def post(self):
-        data = StudentDormModel.parser.parse_args()
+        data = StudentDorm.parser.parse_args()
         student_id = data['student_id']
         dormitory_id = data['dormitory_id']
         check_in_date = data['check_in_date']
         check_out_date = data['check_out_date']
 
+    
+        if self.model.create(student_id, dormitory_id, check_in_date, check_out_date) == False:
+            return {'message': 'Failed creating student'}, 400
         
-        
-        self.model.create(student_id, dormitory_id, check_in_date, check_out_date)
         return {'message': 'Student in Dormitory created successfully'}, 201
 
 class StudentDormListQuarry(Resource):

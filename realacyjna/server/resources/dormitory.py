@@ -4,11 +4,11 @@ from models.dormitory import DormitoryModel
 
 class Dormitory(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument('name', type=str, required=True, help='Name is a required field')
-    parser.add_argument('address', type=str, required=True, help='Address is a required field')
-    parser.add_argument('city', type=str, required=True, help='City is a required field')
-    parser.add_argument('state', type=str, required=True, help='State is a required field')
-    parser.add_argument('zip', type=int, required=True, help='Zip is a required field')
+    parser.add_argument('name', type=str, help='Name is a required field')
+    parser.add_argument('address', type=str, help='Address is a required field')
+    parser.add_argument('city', type=str, help='City is a required field')
+    parser.add_argument('state', type=str, help='State is a required field')
+    parser.add_argument('zip', type=int, help='Zip is a required field')
     parser.add_argument('capacity', type=int)
     parser.add_argument('occupancy', type=int)
 

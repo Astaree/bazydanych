@@ -161,6 +161,7 @@ function createNew(table) {
     })
         .then(response => response.json())
         .then(data => {
+            console.log(response);
             closeModal();
             getTable(table);
         })
@@ -179,6 +180,8 @@ function deleteElement(table) {
     })
         .then(response => response.json())
         .then(() => {
+            
+            if(response.status == 404) alert(data.message)
             closeModal();
             getTable(table);
         })
@@ -203,6 +206,7 @@ function updateElement(table) {
     })
         .then(response => response.json())
         .then(data => {
+            if(response.status == 404) alert(data.message)
             closeModal();
             getTable(table);
         })

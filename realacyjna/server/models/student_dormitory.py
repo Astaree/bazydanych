@@ -4,7 +4,7 @@ from database import Database
 
 class StudentDormModel:
     def __init__(self):
-        self.connection = sqlite3.connect('baza.db')
+        self.connection = sqlite3.connect('baza.db', isolation_level=None)
         self.cursor = self.connection.cursor()
 
     def create(self, student_id, dormitory_id, check_in_date, check_out_date):
