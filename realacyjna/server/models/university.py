@@ -7,7 +7,7 @@ class UniversityModel:
         self.db = Database('baza.db')
 
     def create(self, name, location, dean_name):
-        query = 'INSERT INTO university (name, location, dean_name, student_count) VALUES (?, ?, ?, 0)'
+        query = 'INSERT INTO university (name, location, dean_name,  max_students) VALUES (?, ?, ?, ?)'
         self.db.execute(query, (name, location, dean_name))
         self.db.commit()
 
@@ -17,7 +17,7 @@ class UniversityModel:
         universities = []
         for row in result:
             university = {'id': row['id'], 'name': row['name'], 'location': row['location'],
-                          'dean_name': row['dean_name'], 'student_count': row['student_count']}
+                          'dean_name': row['dean_name'], 'student_count': row['student_count'], 'max_students': row['max_students']}
             universities.append(university)
         return universities
 
@@ -26,12 +26,12 @@ class UniversityModel:
         result = self.db.execute(query, (id,)).fetchone()
         if result:
             university = {'id': result['id'], 'name': result['name'], 'location': result['location'],
-                          'dean_name': result['dean_name'], 'student_count': result['student_count']}
+                          'dean_name': result['dean_name'], 'student_count': result['student_count'], 'max_students': result['max_students']}
             return university
         return None
 
     def read_by_query(self, id=None, name=None, location=None,
-                      dean_name=None, student_count=None):
+                      dean_name=None, student_count=None, max_students=None):
         query = 'SELECT * FROM university WHERE '
         if id:
             query += 'id = ? AND '
@@ -43,9 +43,11 @@ class UniversityModel:
             query += 'dean_name = ? AND '
         if student_count:
             query += 'student_count = ? AND '
+        if max_students:
+            query += 'max_students = ? AND '
         query = query.rstrip('AND ')
         values = tuple(
-            filter(None, [id, name, location, dean_name, student_count]))
+            filter(None, [id, name, location, dean_name, student_count, max_students]))
         result = self.db.execute(query, values).fetchall()
         universities = []
         for row in result:
@@ -54,7 +56,8 @@ class UniversityModel:
                 'name': row['name'],
                 'location': row['location'],
                 'dean_name': row['dean_name'],
-                'student_count': row['student_count']
+                'student_count': row['student_count'],
+                'max_students': row['max_students']
             }
             universities.append(university)
         return universities

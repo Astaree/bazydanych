@@ -96,18 +96,25 @@ function openModal(action, table) {
     form.innerHTML = '';
     switch (action) {
         case "create":
-            currTableKeys.forEach(key => {
-                if (key == "id" || key == "student_count" || key == "join_date" || key == "semester") return;
-                form.appendChild(document.createElement('label'));
-                form.lastChild.innerHTML = key;
-                form.appendChild(document.createElement('input'));
-                form.lastChild.setAttribute('name', key);
-                form.lastChild.setAttribute('type', 'text');
-                form.lastChild.setAttribute('placeholder', key);
-            });
-            form.appendChild(document.createElement('button'));
-            form.lastChild.innerHTML = "Create";
-            form.lastChild.setAttribute('onclick', `createNew('${table}')`);
+            console.log(table);
+            if (table == "students_dormitory" || table == "students_major" || table == "university_major") {
+
+            }
+            else {
+
+                currTableKeys.forEach(key => {
+                    if (key == "id" || key == "student_count" || key == "join_date" || key == "semester") return;
+                    form.appendChild(document.createElement('label'));
+                    form.lastChild.innerHTML = key;
+                    form.appendChild(document.createElement('input'));
+                    form.lastChild.setAttribute('name', key);
+                    form.lastChild.setAttribute('type', 'text');
+                    form.lastChild.setAttribute('placeholder', key);
+                });
+                form.appendChild(document.createElement('button'));
+                form.lastChild.innerHTML = "Create";
+                form.lastChild.setAttribute('onclick', `createNew('${table}')`);
+            }
             break;
         case "delete":
             form.appendChild(document.createElement('label'));
@@ -180,8 +187,8 @@ function deleteElement(table) {
     })
         .then(response => response.json())
         .then(() => {
-            
-            if(response.status == 404) alert(data.message)
+
+            if (response.status == 404) alert(data.message)
             closeModal();
             getTable(table);
         })
@@ -206,7 +213,7 @@ function updateElement(table) {
     })
         .then(response => response.json())
         .then(data => {
-            if(response.status == 404) alert(data.message)
+            if (response.status == 404) alert(data.message)
             closeModal();
             getTable(table);
         })
@@ -218,7 +225,7 @@ function updateElement(table) {
 function filter(table) {
     let form_table = document.getElementById('find_table');
     let data = {};
-    
+
     form_table.childNodes[0].childNodes.forEach(node => {
         if (node.childNodes[0].value != "") data[node.childNodes[0].name] = node.childNodes[0].value;
     });
@@ -260,6 +267,6 @@ function filter(table) {
             });
         }
         )
-    
+
 }
 

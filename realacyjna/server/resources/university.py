@@ -69,6 +69,7 @@ class UniversityList(Resource):
         location = data['location']
         dean_name = data['dean_name']
         student_count = data['student_count']
+        max_students = data['max_students']
 
         self.model.create(name, location, dean_name)
         return {'message': 'University created successfully.'}, 201
@@ -85,10 +86,11 @@ class UniversityQuery(Resource):
         location = request.args.get('location')
         dean_name = request.args.get('dean_name')
         student_count = request.args.get('student_count')
+        max_students = request.args.get('max_students')
         
 
         universities = self.model.read_by_query(
-            id, name, location, dean_name, student_count)
+            id, name, location, dean_name, student_count, max_students)
         if universities == []:
             return {'message': 'No data in table',
                     'keys': [
@@ -97,6 +99,7 @@ class UniversityQuery(Resource):
                         'location',
                         'dean_name',
                         'student_count'
+                        'max_students'
                     ]
                     }, 404
         return universities, 200
