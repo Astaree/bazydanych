@@ -6,8 +6,8 @@ from resources.major import Major, MajorList, MajorQuery
 from resources.university_major import UniversityMajor, UniversityMajorList, UniversityMajorListQuarry
 from resources.student import Student, StudentList, StudentQuary
 from resources.student_dormitory import StudentDorm, StudentDormList, StudentDormListQuarry
-from resources.student_major import StudentMajor, StudentMajorList, StudentMajorListQuarry
 from resources.dormitory import Dormitory, DormitoryList, DormitoryListQuarry
+from resources.staff import Staff, StaffList, StaffQuery
 from resources.index import Index
 
 
@@ -37,20 +37,15 @@ api.add_resource(StudentDorm, '/api/students_dormitory/<int:id>')
 api.add_resource(StudentDormList, '/api/students_dormitory')
 api.add_resource(StudentDormListQuarry, '/api/qstudents_dormitory')
 
-# Add routes for the Student in major resource
-api.add_resource(StudentMajor, '/api/students_major/<int:id>')
-api.add_resource(StudentMajorList, '/api/students_major')
-api.add_resource(StudentMajorListQuarry, '/api/qstudents_major')
-
 # Add routes for the Dormitory resource
 api.add_resource(Dormitory, '/api/dormitories/<int:id>')
 api.add_resource(DormitoryList, '/api/dormitories')
 api.add_resource(DormitoryListQuarry, '/api/qdormitories')
 
-# Add routes for the Major in university resource
-api.add_resource(UniversityMajor, '/api/university_major/<int:id>')
-api.add_resource(UniversityMajorList, '/api/university_major')
-api.add_resource(UniversityMajorListQuarry, '/api/quniversity_major')
+# Add routes for the staff resource
+api.add_resource(Staff, '/api/staff/<int:id>')
+api.add_resource(StaffList, '/api/staff')
+api.add_resource(StaffQuery, '/api/qstaff')
 
 # client routes
 api.add_resource(Index, '/')
