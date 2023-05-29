@@ -55,7 +55,8 @@ class UniversityList(Resource):
                         'name',
                         'location',
                         'dean_name',
-                        'student_count'
+                        'student_count',
+                        'max_students'
                     ]
                     }, 404
         return universities, 200
