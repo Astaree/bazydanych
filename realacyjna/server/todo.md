@@ -1,4 +1,3 @@
-
 uni - wiele do 1
 dorm - 1 student do wiele
 
