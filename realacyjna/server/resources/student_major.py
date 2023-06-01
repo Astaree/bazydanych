@@ -4,8 +4,8 @@ from models.student_major import StudentMajorModel
 
 class StudentMajor(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument('student_id', type=int, required=True, help='student_id required')
-    parser.add_argument('major_id', type=int, required=True, help='major_id required')
+    parser.add_argument('student_id', type=int)
+    parser.add_argument('major_id', type=int)
 
     def __init__(self):
         self.model = StudentMajorModel()
@@ -19,7 +19,7 @@ class StudentMajor(Resource):
 
 
     def put(self,id):
-        data = StudentMajorModel.parser.parse_args()
+        data = StudentMajor.parser.parse_args()
         student_id = data['student_id']
         major_id = data['major_id']
 
@@ -54,10 +54,8 @@ class StudentMajorList(Resource):
                     }, 404
         return student_faculties, 200 
 
-    def post(self, id):
-        if self.model.read_one(id):
-            return {'message': 'Student Major with given ID already exists'}, 400
-        data = StudentMajorModel.parser.parse_args()
+    def post(self):
+        data = StudentMajor.parser.parse_args()
         student_id = data['student_id']
         major_id = data['major_id']
 

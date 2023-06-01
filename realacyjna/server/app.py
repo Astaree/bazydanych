@@ -24,14 +24,14 @@ api.add_resource(UniversityQuery, '/api/quniversity')
 
 # Add routes for the Major resource
 api.add_resource(Major, '/api/majors/<int:id>')
-api.add_resource(MajorList, '/api/majors')
-api.add_resource(MajorQuery, '/api/qmajors')
+api.add_resource(MajorList, '/api/major')
+api.add_resource(MajorQuery, '/api/qmajor')
 
 
 # Add routes for the Student resource
 api.add_resource(Student, '/api/students/<int:id>')
-api.add_resource(StudentList, '/api/students')
-api.add_resource(StudentQuary, '/api/qstudents')
+api.add_resource(StudentList, '/api/student')
+api.add_resource(StudentQuary, '/api/qstudent')
 
 # Add routes for the Student in dormitory resource
 api.add_resource(StudentDorm, '/api/students_dormitory/<int:id>')
@@ -46,8 +46,8 @@ api.add_resource(StudentMajorListQuarry, '/api/qstudents_major')
 
 # Add routes for the Dormitory resource
 api.add_resource(Dormitory, '/api/dormitories/<int:id>')
-api.add_resource(DormitoryList, '/api/dormitories')
-api.add_resource(DormitoryListQuarry, '/api/qdormitories')
+api.add_resource(DormitoryList, '/api/dormitory')
+api.add_resource(DormitoryListQuarry, '/api/qdormitory')
 
 # Add routes for the staff resource
 api.add_resource(Staff, '/api/staff/<int:id>')

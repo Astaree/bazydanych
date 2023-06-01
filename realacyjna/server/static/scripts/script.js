@@ -84,8 +84,6 @@ function getTable(table) {
                     tableDataElem.lastChild.lastChild.innerHTML = row[key];
                 });
             });
-
-
         })
         .catch(error => console.error(error));
 }
@@ -96,25 +94,47 @@ function openModal(action, table) {
     form.innerHTML = '';
     switch (action) {
         case "create":
-            console.log(table);
-            if (table == "students_dormitory" || table == "students_major" || table == "university_major") {
-
-            }
-            else {
-
-                currTableKeys.forEach(key => {
-                    if (key == "id" || key == "student_count" || key == "join_date" || key == "semester") return;
-                    form.appendChild(document.createElement('label'));
-                    form.lastChild.innerHTML = key;
+            currTableKeys.forEach(key => {
+                if (key == "id" || key == "student_count" || key == "join_date" || key == "semester") return;
+                form.appendChild(document.createElement('label'));
+                form.lastChild.innerHTML = key;
+                if (key != "staff_id" && key != "student_id" && key != "major_id" && key != "dormitory_id" && key != "university_id") {
                     form.appendChild(document.createElement('input'));
                     form.lastChild.setAttribute('name', key);
                     form.lastChild.setAttribute('type', 'text');
                     form.lastChild.setAttribute('placeholder', key);
-                });
-                form.appendChild(document.createElement('button'));
-                form.lastChild.innerHTML = "Create";
-                form.lastChild.setAttribute('onclick', `createNew('${table}')`);
-            }
+                } else {
+                    console.log(key);
+                    let select = document.createElement('select');
+                    select.setAttribute('id', `${key}_select`);
+                    select.setAttribute('type', 'text');
+                    select.setAttribute('placeholder', key);
+
+                    fetch(`/api/${key.split('_')[0]}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.message == "No data in table") return;
+                            data.forEach(element => {
+                                let keys = JSON.stringify(Object.keys(data[0]));
+                                keys = keys.replace(/[\[\]"]+/g, '');
+                                keys = keys.split(',');
+                                let elementForat = "";
+                                keys.forEach(key => {
+                                    elementForat += `, ${key}: ${element[key]}`;
+                                });
+                                elementForat = elementForat.substring(2);
+                                select.appendChild(document.createElement('option'));
+                                select.lastChild.innerHTML = elementForat;
+                            });
+                        }).then(() => {
+                        })
+                        .catch(error => console.error(error));
+                    form.appendChild(select);
+                }
+            });
+            form.appendChild(document.createElement('button'));
+            form.lastChild.innerHTML = "Create";
+            form.lastChild.setAttribute('onclick', `createNew('${table}')`);
             break;
         case "delete":
             form.appendChild(document.createElement('label'));
@@ -129,13 +149,42 @@ function openModal(action, table) {
             break;
         case "update":
             currTableKeys.forEach(key => {
-                if (key == "student_count" || key == "join_date") return;
+                if (key == "student_count" || key == "join_date" || key == "semester" || key == "leave_date") return;
                 form.appendChild(document.createElement('label'));
                 form.lastChild.innerHTML = key;
-                form.appendChild(document.createElement('input'));
-                form.lastChild.setAttribute('name', key);
-                form.lastChild.setAttribute('type', 'text');
-                form.lastChild.setAttribute('placeholder', key);
+                if (key != "staff_id" && key != "student_id" && key != "major_id" && key != "dormitory_id" && key != "university_id") {
+                    form.appendChild(document.createElement('input'));
+                    form.lastChild.setAttribute('name', key);
+                    form.lastChild.setAttribute('type', 'text');
+                    form.lastChild.setAttribute('placeholder', key);
+                } else {
+                    console.log(key);
+                    let select = document.createElement('select');
+                    select.setAttribute('id', `${key}_select`);
+                    select.setAttribute('type', 'text');
+                    select.setAttribute('placeholder', key);
+
+                    fetch(`/api/${key.split('_')[0]}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.message == "No data in table") return;
+                            data.forEach(element => {
+                                let keys = JSON.stringify(Object.keys(data[0]));
+                                keys = keys.replace(/[\[\]"]+/g, '');
+                                keys = keys.split(',');
+                                let elementForat = "";
+                                keys.forEach(key => {
+                                    elementForat += `, ${key}: ${element[key]}`;
+                                });
+                                elementForat = elementForat.substring(2);
+                                select.appendChild(document.createElement('option'));
+                                select.lastChild.innerHTML = elementForat;
+                            });
+                        }).then(() => {
+                        })
+                        .catch(error => console.error(error));
+                    form.appendChild(select);
+                }
             });
             form.appendChild(document.createElement('button'));
             form.lastChild.innerHTML = "Update";
@@ -157,8 +206,13 @@ function createNew(table) {
     let data = {};
     currTableKeys.forEach(key => {
         if (key == "id" || key == "student_count" || key == "join_date" || key == "semester" || key == "leave_date") return;
-        data[key] = form[key].value;
+        if (key != "staff_id" && key != "student_id" && key != "major_id" && key != "dormitory_id" && key != "university_id") {
+            data[key] = form[key].value;
+        } else {
+            data[key] = form[`${key}_select`].value.split(':')[1].trim().split(',')[0];
+        }
     });
+    console.log(data);
     fetch(`/api/${table}`, {
         method: 'POST',
         headers: {
@@ -201,9 +255,14 @@ function updateElement(table) {
     let form = document.getElementById('input_form');
     let data = {};
     currTableKeys.forEach(key => {
-        if (key == "student_count" || key == "join_date" || key == "semester" || key == "leave_date") return;
-        if (form[key].value != "") data[key] = form[key].value;;
+        if (key == "id" || key == "student_count" || key == "join_date" || key == "semester" || key == "leave_date") return;
+        if (key != "staff_id" && key != "student_id" && key != "major_id" && key != "dormitory_id" && key != "university_id") {
+            data[key] = form[key].value;
+        } else {
+            data[key] = form[`${key}_select`].value.split(':')[1].trim().split(',')[0];
+        }
     });
+    console.log(data);
     fetch(`/api/${table}/${form["id"].value}`, {
         method: 'PUT',
         headers: {
@@ -211,7 +270,10 @@ function updateElement(table) {
         },
         body: JSON.stringify(data),
     })
-        .then(response => response.json())
+        .then(response => {
+            response.json()
+            console.log(response);
+        })
         .then(data => {
             if (response.status == 404) alert(data.message)
             closeModal();
