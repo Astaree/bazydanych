@@ -3,6 +3,7 @@ function getTable(table) {
     fetch(`/api/${table}`)
         .then(response => response.json())
         .then(data => {
+            document.getElementById('find_table').innerHTML = '';
             // update the table data placeholder with the new data
             const nav_table = document.getElementById('nav_table');
             nav_table.innerHTML = '';
@@ -40,23 +41,24 @@ function getTable(table) {
                 keys = keys.split(',');
                 currTableKeys = keys;
             }
-            //update search bar with the new keys
-
-            const find_table = document.getElementById('find_table');
-            find_table.innerHTML = '';
-            find_table.appendChild(document.createElement('tr'));
-            keys.forEach(key => {
+            if (table != "students_major" && table != "students_dormitory") {
+                //update search bar with the new keys
+                const find_table = document.getElementById('find_table');
+                find_table.innerHTML = '';
+                find_table.appendChild(document.createElement('tr'));
+                keys.forEach(key => {
+                    find_table.lastChild.appendChild(document.createElement('th'));
+                    find_table.lastChild.lastChild.appendChild(document.createElement('input'));
+                    find_table.lastChild.lastChild.lastChild.setAttribute('type', 'text');
+                    find_table.lastChild.lastChild.lastChild.setAttribute('placeholder', key);
+                    find_table.lastChild.lastChild.lastChild.setAttribute('name', key);
+                }
+                );
                 find_table.lastChild.appendChild(document.createElement('th'));
-                find_table.lastChild.lastChild.appendChild(document.createElement('input'));
-                find_table.lastChild.lastChild.lastChild.setAttribute('type', 'text');
-                find_table.lastChild.lastChild.lastChild.setAttribute('placeholder', key);
-                find_table.lastChild.lastChild.lastChild.setAttribute('name', key);
+                find_table.lastChild.lastChild.appendChild(document.createElement('button'));
+                find_table.lastChild.lastChild.lastChild.innerHTML = "Find";
+                find_table.lastChild.lastChild.lastChild.setAttribute('onclick', `filter('${table}')`);
             }
-            );
-            find_table.lastChild.appendChild(document.createElement('th'));
-            find_table.lastChild.lastChild.appendChild(document.createElement('button'));
-            find_table.lastChild.lastChild.lastChild.innerHTML = "Find";
-            find_table.lastChild.lastChild.lastChild.setAttribute('onclick', `filter('${table}')`);
 
             // update the content table headers with the new keys and 
             //fill the table with the  data
@@ -64,26 +66,125 @@ function getTable(table) {
             const tableDataElem = document.getElementById('table-data');
             tableDataElem.innerHTML = '';
             tableDataElem.appendChild(document.createElement('tr'));
-
-            keys.forEach(key => {
-                tableDataElem.lastChild.appendChild(document.createElement('th'));
-                tableDataElem.lastChild.lastChild.innerHTML = key;
-            });
-
-            if (data.message == "No data in table") {
-                tableDataElem.appendChild(document.createElement('tr'));
-                tableDataElem.lastChild.appendChild(document.createElement('td'));
-                tableDataElem.lastChild.lastChild.innerHTML = "No data in table";
-
-                return;
-            };
-            data.forEach(row => {
-                tableDataElem.appendChild(document.createElement('tr'));
+            if (table != "students_major" && table != "students_dormitory") {
                 keys.forEach(key => {
-                    tableDataElem.lastChild.appendChild(document.createElement('td'));
-                    tableDataElem.lastChild.lastChild.innerHTML = row[key];
+                    tableDataElem.lastChild.appendChild(document.createElement('th'));
+                    tableDataElem.lastChild.lastChild.innerHTML = key;
                 });
-            });
+
+                if (data.message == "No data in table") {
+                    tableDataElem.appendChild(document.createElement('tr'));
+                    tableDataElem.lastChild.appendChild(document.createElement('td'));
+                    tableDataElem.lastChild.lastChild.innerHTML = "No data in table";
+
+                    return;
+                };
+                data.forEach(row => {
+                    tableDataElem.appendChild(document.createElement('tr'));
+                    keys.forEach(key => {
+                        tableDataElem.lastChild.appendChild(document.createElement('td'));
+                        tableDataElem.lastChild.lastChild.innerHTML = row[key];
+                    });
+                });
+            } else {
+                tableHead = document.createElement('thead');
+                tableHead.setAttribute('id', 'table-head');
+                keys.forEach(key => {
+                    if (key == "id") return;
+                    if (key == "student_id" || key == "major_id" || key == "dormitory_id") {
+                        tableHead.appendChild(document.createElement('th'));
+                        tableHead.lastChild.innerHTML = key.split('_')[0];
+                        return;
+                    };
+                    tableHead.appendChild(document.createElement('th'));
+                    tableHead.lastChild.innerHTML = key;
+                });
+                tableDataElem.appendChild(tableHead);
+
+                if (data.message == "No data in table") {
+                    tableDataElem.appendChild(document.createElement('tr'));
+                    tableDataElem.lastChild.appendChild(document.createElement('td'));
+                    tableDataElem.lastChild.lastChild.innerHTML = "No data in table";
+                    return;
+                };
+
+                data.forEach(row => {
+                    console.log(row);
+                    tableDataElem.appendChild(document.createElement('tr'));
+                    keys.forEach(key => {
+                        if (key == "student_id" || key == "major_id" || key == "dormitory_id") {
+                            if (key == "student_id") {
+                                fetch(`/api/students/${row[key]}`)
+                                    .then(response => response.json())
+                                    .then((data) => {
+                                        let counter = 0;
+                                        keys = JSON.stringify(Object.keys(data));
+                                        keys = keys.replace(/[\[\]"]+/g, '');
+                                        keys = keys.split(',');
+                                        keys.forEach(key => {
+                                            if (key == "date_of_birth" || key == "gender" || key == "join_date" || key == "semester") return;
+                                            tableDataElem.lastChild.appendChild(document.createElement('td'));
+                                            tableDataElem.lastChild.lastChild.innerHTML = data[key];
+                                            counter += 1;
+                                        });
+                                        document.getElementById('table-head').childNodes.forEach(node => {
+                                            if (node.innerHTML == "student") {
+                                                node.setAttribute('colspan', counter);
+                                            }
+                                        });
+                                    });
+                                console.log(document.getElementById('table-head').childNodes);
+                            }
+                            if (key == "major_id") {
+                                fetch(`/api/majors/${row[key]}`)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        let counter = 0;
+                                        keys = JSON.stringify(Object.keys(data));
+                                        keys = keys.replace(/[\[\]"]+/g, '');
+                                        keys = keys.split(',');
+                                        keys.forEach(key => {
+                                            if (key == "staff_id" || key == "university_id" || key == "office") return;
+                                            tableDataElem.lastChild.appendChild(document.createElement('td'));
+                                            tableDataElem.lastChild.lastChild.innerHTML = data[key];
+                                            counter += 1;
+                                        });
+                                        document.getElementById('table-head').childNodes.forEach(node => {
+                                            if (node.innerHTML == "major") {
+                                                node.setAttribute('colspan', counter);
+                                            }
+                                        });
+                                    });
+
+                            }
+                            if (key == "dormitory_id") {
+                                fetch(`/api/dormitories/${row[key]}`)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        let counter = 0;
+                                        keys = JSON.stringify(Object.keys(data));
+                                        keys = keys.replace(/[\[\]"]+/g, '');
+                                        keys = keys.split(',');
+                                        keys.forEach(key => {
+                                            if (key == "occupancy" || key == "capacity" || key == "zip" || key == "state") return;
+                                            tableDataElem.lastChild.appendChild(document.createElement('td'));
+                                            tableDataElem.lastChild.lastChild.innerHTML = data[key];
+                                            counter += 1;
+                                        });
+                                        document.getElementById('table-head').childNodes.forEach(node => {
+                                            if (node.innerHTML == "dormitory") {
+                                                node.setAttribute('colspan', counter);
+                                            }
+                                        });
+                                    });
+                            }
+                        }
+                    });
+
+                    
+                    
+                });
+            }
         })
         .catch(error => console.error(error));
 }

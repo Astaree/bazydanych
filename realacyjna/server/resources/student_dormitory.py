@@ -22,12 +22,10 @@ class StudentDorm(Resource):
         data = StudentDorm.parser.parse_args()
         student_id = data['student_id']
         dormitory_id = data['dormitory_id']
-        check_in_date = data['check_in_date']
-        check_out_date = data['check_out_date']
 
         student_dormitory = self.model.read_one(id)
         if student_dormitory:
-            self.model.update(id, student_id, dormitory_id, check_in_date, check_out_date)
+            self.model.update(id, student_id, dormitory_id)
             return {'message': 'Student in Dormitory updated successfully'}, 200
         return {'message': 'Student in Dormitory not found'}, 404
     
@@ -50,8 +48,6 @@ class StudentDormList(Resource):
                         'id',
                         'student_id',
                         'dormitory_id',
-                        'check_in_date',
-                        'check_out_date'
                     ]
                     }, 404
         return stud_dorm, 200
@@ -60,11 +56,9 @@ class StudentDormList(Resource):
         data = StudentDorm.parser.parse_args()
         student_id = data['student_id']
         dormitory_id = data['dormitory_id']
-        check_in_date = data['check_in_date']
-        check_out_date = data['check_out_date']
 
     
-        if self.model.create(student_id, dormitory_id, check_in_date, check_out_date) == False:
+        if self.model.create(student_id, dormitory_id) == False:
             return {'message': 'Failed creating student'}, 400
         
         return {'message': 'Student in Dormitory created successfully'}, 201
@@ -78,18 +72,14 @@ class StudentDormListQuarry(Resource):
         id = request.args.get('id')
         student_id = request.args.get('student_id')
         dormitory_id = request.args.get('dormitory_id')
-        check_in_date = request.args.get('check_in_date')
-        check_out_date = request.args.get('check_out_date')
         
-        stud_dorm = self.model.read_by_query(id, student_id, dormitory_id, check_in_date, check_out_date)
+        stud_dorm = self.model.read_by_query(id, student_id, dormitory_id)
         if stud_dorm == []:
             return {'message': 'No data in table',
                     'keys':[
                         'id',
                         'student_id',
                         'dormitory_id',
-                        'check_in_date',
-                        'check_out_date'
                     ]
                     }, 404
         return stud_dorm, 200
