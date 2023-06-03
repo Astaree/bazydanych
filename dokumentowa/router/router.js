@@ -2,6 +2,7 @@ const express = require('express');
 const { default: mongoose } = require('mongoose');
 const router = express.Router();
 
+
 // Define routes
 router.get('/', (req, res) => {
   //list all routes
@@ -16,37 +17,35 @@ router.get('/', (req, res) => {
         name: 'ingredients',
         url: 'http://localhost:3000/ingredients',
       },
+      {
+        name: 'pictures',
+        url: 'http://localhost:3000/pictures',
+      },
+      {
+        name:"client",
+        url:"http://localhost:3000/client",
+      },
+      {
+        name:"meal",
+        url:"http://localhost:3000/meal",
+      },
+      {
+        name:"order",
+        url:"http://localhost:3000/order",
+      }
     ],
   });
 });
 
-
 // Example route that interacts with the database
-router.get('/ingredients', (req, res) => {
-  const Ingredient = require('../model/ingredients');
-  Ingredient.find()
-    .exec()
-    .then((docs) => {
-      res.status(200).json(docs);
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).json({ error: err });
-    });
-});
 
-router.get('/drinks', (req, res) => {
-  const Drink = require('../model/drink');
-  Drink.find()
-    .exec()
-    .then((docs) => {
-      res.status(200).json(docs);
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).json({ error: err });
-    });
-});
+router.use("/client", require("./client"));
+router.use("/drinks", require("./drinks"));
+router.use("/ingredients", require("./ingredients"));
+router.use("/meal", require("./meal"));
+router.use("/order", require("./order"));
+router.use("/picture", require("./picture"));
+
 
 module.exports = router;
 

@@ -10,6 +10,7 @@ function connectToDatabase(url) {
     db.once('open', () => {
         console.log('Connected to the database');
     });
+    
     return db;
 }
 
