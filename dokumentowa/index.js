@@ -1,9 +1,12 @@
 const express = require('express');
-const router = require('./router');
+const router = require('./router/router');
 const morgan = require('morgan');
+const { imortEnv } = require('./config/env');
+const { connectToDatabase } = require('./config/database');
 
 
-
+const env = imortEnv();
+db = connectToDatabase(env.DATABASE_URL);
 // Use morgan for logging
 const app = express();
 
