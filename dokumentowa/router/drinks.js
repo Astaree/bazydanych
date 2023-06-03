@@ -1,39 +1,40 @@
 const express = require('express');
 const router = express.Router();
-
-const morgan = require('morgan');
+const Drink = require('../controller/drink');
 
 router.get('/', (req, res) => {
+    let drinks = Drink.getDrinks();
     res.status(200).json({
-        route:"drinks"
+        route: "drink",
+        drinks: drinks
     })
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
 
 });
 
-router.put('/', (req, res) => {
+router.put('/', async (req, res) => {
 
 });
 
-router.delete('/', (req, res) => {
+router.delete('/', async (req, res) => {
 
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
 
 });
 
-router.post('/:id', (req, res) => {
+router.post('/:id', async (req, res) => {
 
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
 
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
 
 });
 

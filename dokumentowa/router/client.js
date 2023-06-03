@@ -4,35 +4,39 @@ const Client = require('../controller/client');
 
 const morgan = require('morgan');
 
-router.get('/', (req, res) => {
-    Client.getClients(req, res);
+router.get('/', async (req, res) => {
+    let clients = Client.getClients(req, res);
+    res.status(200).json({
+        route: "client",
+        clients: clients
+    })
 });
 
-router.post('/', (req, res) => {
-
-});
-
-router.put('/', (req, res) => {
-
-});
-
-router.delete('/', (req, res) => {
+router.post('/', async (req, res) => {
 
 });
 
-router.get('/:id', (req, res) => {
+router.put('/', async (req, res) => {
 
 });
 
-router.post('/:id', (req, res) => {
+router.delete('/', async (req, res) => {
 
 });
 
-router.put('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
 
 });
 
-router.delete('/:id', (req, res) => {
+router.post('/:id', async (req, res) => {
+
+});
+
+router.put('/:id', async (req, res) => {
+
+});
+
+router.delete('/:id', async (req, res) => {
 
 });
 

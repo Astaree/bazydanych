@@ -1,39 +1,34 @@
 const express = require('express');
 const router = express.Router();
 
-const morgan = require('morgan');
-
-router.get('/', (req, res) => {
-    res.status(200).json({
-        route:"picture"
-    })
+router.get('/', async (req, res) => {
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
 
 });
 
-router.put('/', (req, res) => {
+router.put('/', async (req, res) => {
 
 });
 
-router.delete('/', (req, res) => {
+router.delete('/', async (req, res) => {
 
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
 
 });
 
-router.post('/:id', (req, res) => {
+router.post('/:id', async (req, res) => {
 
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
 
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
 
 });
 
