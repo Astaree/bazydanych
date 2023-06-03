@@ -1,15 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const Client = require('../controller/client');
-
-const morgan = require('morgan');
+const { default: mongoose } = require('mongoose');
 
 router.get('/', async (req, res) => {
-    let clients = Client.getClients(req, res);
+    let clients = Client.getClients();
     res.status(200).json({
         route: "client",
         clients: clients
-    })
+    });
 });
 
 router.post('/', async (req, res) => {

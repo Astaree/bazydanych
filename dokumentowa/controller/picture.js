@@ -11,6 +11,6 @@ async function getPictures() {
     }
 }
 
-exports.default = {
+module.exports = {
     getPictures,
 }

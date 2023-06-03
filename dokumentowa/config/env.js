@@ -1,5 +1,4 @@
 const dotenv = require('dotenv');
-const morgan = require('morgan');
 
 function imortEnv() {
     dotenv.config();

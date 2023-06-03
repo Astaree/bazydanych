@@ -1,9 +1,8 @@
 const mongoose = require('mongoose');
-const ingredientSchema = require('./ingredient');
+const ingredients = require('./ingredient');
 const Picture = require('./picture');
 
 const mealSchema = new mongoose.Schema({
-    _id: mongoose.Schema.Types.ObjectId,
     name: {
         type: String,
         required: true,
@@ -20,11 +19,11 @@ const mealSchema = new mongoose.Schema({
         required: true,
     },
     ingredients: [{
-        type: ingredientSchema.Schema,
+        type: ingredients.schema,
         required: true,
     }],
     picture: [{
-        type: Picture.Schema,
+        type: Picture.schema,
         required: true,
     }],
 });

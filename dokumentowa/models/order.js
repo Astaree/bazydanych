@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
-    _id: mongoose.Schema.Types.ObjectId,
     //ref to client
     client: {
         type: mongoose.Schema.Types.ObjectId,
@@ -10,16 +9,25 @@ const orderSchema = new mongoose.Schema({
     },
     //ref to drink
     drink: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Drink',
-        required: true,
+        quantity: Number,
+        drink: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Drink',
+            required: true,
+        }
     }],
     //ref to meal
-    meal: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Meal',
-        required: true,
-    }],
+    meal: [
+        {
+            quantity: Number,
+            meal:
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Meal',
+                required: true,
+            }
+        }
+    ],
     //date of order
     dateOfOrder: {
         type: Date,

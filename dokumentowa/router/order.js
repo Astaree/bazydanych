@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
+const Order = require('../controller/order');
 
-const morgan = require('morgan');
-
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
+    let orders = Order.getOrders();
     res.status(200).json({
-        route: "order"
-    })
+        route: "order",
+        orders: orders
+    });
 });
 
 router.post('/', async (req, res) => {

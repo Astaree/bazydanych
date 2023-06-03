@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const ingredientSchema = new mongoose.Schema({
-    _id: mongoose.Schema.Types.ObjectId,
     name: {
         type: String,
         required: true,
@@ -12,4 +11,4 @@ const ingredientSchema = new mongoose.Schema({
     },
 });
 
-module.exports = mongoose.model('Ingredient', ingredientSchema);
+module.exports = mongoose.model('ingredient', ingredientSchema);

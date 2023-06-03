@@ -2,12 +2,12 @@ const express = require('express');
 const router = express.Router();
 const Drink = require('../controller/drink');
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
     let drinks = Drink.getDrinks();
     res.status(200).json({
         route: "drink",
         drinks: drinks
-    })
+    });
 });
 
 router.post('/', async (req, res) => {

@@ -11,6 +11,6 @@ async function getMeals() {
     }
 }
 
-exports.default = {
+module.exports = {
     getMeals,
 }

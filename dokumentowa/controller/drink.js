@@ -11,6 +11,6 @@ async function getDrinks() {
     }
 }
 
-exports.default = {
-    getDrinks,
+module.exports = {
+    getDrinks
 }

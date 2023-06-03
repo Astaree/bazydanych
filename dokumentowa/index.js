@@ -6,7 +6,8 @@ const { connectToDatabase } = require('./config/database');
 
 
 const env = imortEnv();
-db = connectToDatabase(env.DATABASE_URL);
+const db = connectToDatabase(env.DATABASE_URL);
+
 // Use morgan for logging
 const app = express();
 

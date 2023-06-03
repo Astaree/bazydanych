@@ -11,27 +11,27 @@ router.get('/', (req, res) => {
     routes: [
       {
         name: 'drinks',
-        url: 'http://localhost:3000/drinks',
+        url: 'http://localhost:3000/api/drinks',
       },
       {
         name: 'ingredients',
-        url: 'http://localhost:3000/ingredients',
+        url: 'http://localhost:3000/api/ingredients',
       },
       {
         name: 'pictures',
-        url: 'http://localhost:3000/pictures',
+        url: 'http://localhost:3000/api/pictures',
       },
       {
         name:"client",
-        url:"http://localhost:3000/client",
+        url:"http://localhost:3000/api/client",
       },
       {
         name:"meal",
-        url:"http://localhost:3000/meal",
+        url:"http://localhost:3000/api/meal",
       },
       {
         name:"order",
-        url:"http://localhost:3000/order",
+        url:"http://localhost:3000/api/order",
       }
     ],
   });
@@ -39,12 +39,12 @@ router.get('/', (req, res) => {
 
 // Example route that interacts with the database
 
-router.use("/client", require("./client"));
-router.use("/drinks", require("./drinks"));
-router.use("/ingredients", require("./ingredients"));
-router.use("/meal", require("./meal"));
-router.use("/order", require("./order"));
-router.use("/picture", require("./picture"));
+router.use("/api/client", require("./client"));
+router.use("/api/drinks", require("./drinks"));
+router.use("/api/ingredients", require("./ingredients"));
+router.use("/api/meal", require("./meal"));
+router.use("/api/order", require("./order"));
+router.use("/api/picture", require("./picture"));
 
 
 module.exports = router;

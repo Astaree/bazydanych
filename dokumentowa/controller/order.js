@@ -11,6 +11,6 @@ async function getOrders() {
     }
 }
 
-exports.default = {
+module.exports = {
     getOrders,
 }

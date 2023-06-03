@@ -1,7 +1,13 @@
 const express = require('express');
 const router = express.Router();
+const Picture = require('../controller/picture');
 
 router.get('/', async (req, res) => {
+    let pictures = Picture.getPictures();
+    res.status(200).json({
+        route: "picture",
+        pictures: pictures
+    });
 });
 
 router.post('/', async (req, res) => {
