@@ -69,5 +69,6 @@ module.exports = {
     addIngredient,
     deleteIngredients,
     getIngredientById,
-    updateIngredientById
+    updateIngredientById,
+    deleteIngredientById
 }

@@ -18,10 +18,6 @@ router.get('/', (req, res) => {
         url: 'http://localhost:3000/api/ingredients',
       },
       {
-        name: 'pictures',
-        url: 'http://localhost:3000/api/pictures',
-      },
-      {
         name:"client",
         url:"http://localhost:3000/api/client",
       },
@@ -32,7 +28,15 @@ router.get('/', (req, res) => {
       {
         name:"order",
         url:"http://localhost:3000/api/order",
-      }
+      },
+      {
+        name:"delivery",
+        url:"http://localhost:3000/api/delivery",
+      },
+      // {
+      //   name: 'picture',
+      //   url: 'http://localhost:3000/api/picture',
+      // },
     ],
   });
 });
@@ -44,7 +48,8 @@ router.use("/api/drinks", require("./drinks"));
 router.use("/api/ingredients", require("./ingredients"));
 router.use("/api/meal", require("./meal"));
 router.use("/api/order", require("./order"));
-router.use("/api/picture", require("./picture"));
+router.use("/api/delivery", require("./delivery"));
+// router.use("/api/picture", require("./picture"));
 
 
 module.exports = router;

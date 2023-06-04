@@ -10,7 +10,12 @@ router.get('/', async (req, res) => {
             route: "Ingredients",
             ingredients: ing
         });
-    })
+    }).catch((err) => {
+        res.status(400).json({
+            route: "Ingredients",
+            error: err
+        });
+    });
 });
 
 //crates a new ingredient
@@ -22,7 +27,7 @@ router.post('/', async (req, res) => {
         });
     }).catch((err) => {
         res.status(400).json({
-            route: "Error",
+            route: "Ingredients",
             error: err
         });
     });
@@ -37,7 +42,7 @@ router.delete('/', async (req, res) => {
         });
     }).catch((err) => {
         res.status(400).json({
-            route: "Error",
+            route: "Ingredients",
             error: err
         });
     }
@@ -46,12 +51,17 @@ router.delete('/', async (req, res) => {
 
 //get ingredient by id
 router.get('/:id', async (req, res) => {
-    let ingredient = await Ingredient.getIngredientById(req.params.id);
-    res.status(200).json({
-        route: "Ingredients",
-        ingredient: ingredient
+    await Ingredient.getIngredientById(req.params.id).then((ing) => {
+        res.status(200).json({
+            route: "Ingredients",
+            ingredient: ing
+        });
+    }).catch((err) => {
+        res.status(400).json({
+            route: "Ingredients",
+            error: err
+        });
     });
-
 });
 
 //delete an ingredient by id
@@ -63,7 +73,7 @@ router.put('/:id', async (req, res) => {
         });
     }).catch((err) => {
         res.status(400).json({
-            route: "Error",
+            route: "Ingredients",
             error: err
         });
     });
@@ -78,7 +88,7 @@ router.delete('/:id', async (req, res) => {
         });
     }).catch((err) => {
         res.status(400).json({
-            route: "Error",
+            route: "Ingredients",
             error: err
         });
     });

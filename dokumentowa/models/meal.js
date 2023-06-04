@@ -19,12 +19,15 @@ const mealSchema = new mongoose.Schema({
         required: true,
     },
     ingredients: [{
-        type: ingredients.schema,
-        required: true,
+        quantity: Number,
+        ingredient: {
+            type: ingredients.schema,
+            required: true,
+        }
     }],
     picture: [{
         type: Picture.schema,
-        required: true,
+
     }],
 });
 
