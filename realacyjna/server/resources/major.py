@@ -113,7 +113,7 @@ class MajorQuery(Resource):
         university_id = request.args.get('university_id')
         
 
-        majors = self.model.read_by_query(id, name, department, email, phone, office, staff_id, university_id)
+        majors = self.model.read_by_query(name, department, email, phone, office, staff_id, university_id)
         if majors == []:
             return {'message': 'No data in table',
                     'keys': [

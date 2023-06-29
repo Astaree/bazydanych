@@ -28,20 +28,29 @@ class UniversityMajorModel:
     
     def read_by_query(self, id=None, university_id=None, major_id=None):
         query = f'SELECT * FROM {self.table_name} WHERE '
+        conditions = []
+        values = []
+
         if id:
-            query += 'id = %s AND '
+            conditions.append('id = %s')
+            values.append(id)
         if university_id:
-            query += 'university_id = %s AND '
+            conditions.append('university_id = %s')
+            values.append(university_id)
         if major_id:
-            query += 'major_id = %s AND '
-        query = query.rstrip('AND ')
-        values = tuple(filter(None, [id, university_id, major_id]))
+            conditions.append('major_id = %s')
+            values.append(major_id)
+
+        query += ' AND '.join(conditions)
         result = self.db.execute(query, values).fetchall()
+
         university_majors = []
         for row in result:
             university_major = {'id': row['id'], 'university_id': row['university_id'], 'major_id': row['major_id']}
             university_majors.append(university_major)
+
         return university_majors
+    
     
     def update(self, id, university_id, major_id):
         query = f'UPDATE {self.table_name} SET university_id = %s, major_id = %s WHERE id = %s'

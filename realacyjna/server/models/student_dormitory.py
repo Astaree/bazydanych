@@ -43,6 +43,7 @@ class StudentDormModel:
         query = 'SELECT * FROM student_dormitory'
         conditions = []
         values = []
+
         if student_id:
             conditions.append('student_id = ?')
             values.append(student_id)
@@ -51,11 +52,17 @@ class StudentDormModel:
             values.append(dormitory_id)
         if conditions:
             query += ' WHERE ' + ' AND '.join(conditions)
-        result = self.db.execute(query, values).fetchone()
+
+        result = self.cursor.execute(query, values).fetchone()
+
         if result:
-            student_dormitory = {'id': result['id'], 'student_id': result['student_id'],
-                                 'dormitory_id': result['dormitory_id']}
+            student_dormitory = {
+                'id': result['id'],
+                'student_id': result['student_id'],
+                'dormitory_id': result['dormitory_id']
+            }
             return student_dormitory
+
         return None
 
 

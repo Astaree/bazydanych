@@ -1,5 +1,6 @@
 import sqlite3
 from database import Database
+import re
 
 
 class StudentModel:
@@ -54,27 +55,37 @@ class StudentModel:
                       surname=None, email=None, date_of_birth=None,
                       gender=None, join_date=None, semester=None):
         query = 'SELECT * FROM student WHERE '
-        if id:
-            query += 'id = ? AND '
+        conditions = []
+        values = []
+
+        if id is not None:
+            conditions.append('id = ?')
+            values.append(id)
         if name:
-            query += 'name = ? AND '
+            conditions.append('name LIKE ?')
+            values.append('%' + name + '%')
         if surname:
-            query += 'surname = ? AND '
+            conditions.append('surname LIKE ?')
+            values.append('%' + surname + '%')
         if email:
-            query += 'email = ? AND '
+            conditions.append('email LIKE ?')
+            values.append('%' + email + '%')
         if date_of_birth:
-            query += 'date_of_birth = ? AND '
+            conditions.append('date_of_birth = ?')
+            values.append(date_of_birth)
         if gender:
-            query += 'gender = ? AND '
+            conditions.append('gender = ?')
+            values.append(gender)
         if join_date:
-            query += 'join_date = ? AND '
+            conditions.append('join_date = ?')
+            values.append(join_date)
         if semester:
-            query += 'semester = ? AND '
-        query = query.rstrip('AND ')
-        values = tuple(filter(
-            None, [id, name, surname, email, date_of_birth,
-                   gender, join_date, semester]))
+            conditions.append('semester = ?')
+            values.append(semester)
+
+        query += ' AND '.join(conditions)
         result = self.cursor.execute(query, values).fetchall()
+
         students = []
         for row in result:
             student = {
@@ -88,6 +99,7 @@ class StudentModel:
                 'semester': row[7],
             }
             students.append(student)
+
         return students
 
     def update(self, id, name=None, surname=None, email=None, date_of_birth=None, gender=None):
@@ -114,4 +126,5 @@ class StudentModel:
         self.connection.commit()
 
     def __del__(self):
+        self.cursor.close()
         self.connection.close()

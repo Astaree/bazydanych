@@ -376,50 +376,64 @@ function updateElement(table) {
 }
 
 function filter(table) {
-    let form_table = document.getElementById('find_table');
-    let data = {};
-
-    form_table.childNodes[0].childNodes.forEach(node => {
-        if (node.childNodes[0].value != "") data[node.childNodes[0].name] = node.childNodes[0].value;
+    const formTable = document.getElementById('find_table');
+    const data = {};
+  
+    const inputElements = formTable.querySelectorAll('input');
+    inputElements.forEach(input => {
+      if (input.value !== "") {
+        data[input.name] = input.value;
+      }
     });
-    if (Object.keys(data).length == 0) {
-        getTable(table);
-        return;
+  
+    if (Object.keys(data).length === 0) {
+      getTable(table);
+      return;
     }
-    let quary = new URLSearchParams(data).toString();
-    fetch(`/api/q${table}?${quary}`,
-        {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+  
+    const queryParams = new URLSearchParams(data).toString();
+    const url = `/api/q${table}?${queryParams}`;
+  
+    fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then(data => {
+        const tableDataElem = document.getElementById('table-data');
+        tableDataElem.innerHTML = '';
+  
+        if (data.message === "No data in table") {
+          const rowElem = document.createElement('tr');
+          const cellElem = document.createElement('td');
+          cellElem.colSpan = currTableKeys.length;
+          cellElem.innerHTML = "No data in table";
+          rowElem.appendChild(cellElem);
+          tableDataElem.appendChild(rowElem);
+          return;
         }
-    )
-        .then(response => response.json())
-        .then(data => {
-            const tableDataElem = document.getElementById('table-data');
-            tableDataElem.innerHTML = '';
-            tableDataElem.appendChild(document.createElement('tr'));
-            currTableKeys.forEach(key => {
-                tableDataElem.lastChild.appendChild(document.createElement('th'));
-                tableDataElem.lastChild.lastChild.innerHTML = key;
-            });
-            if (data.message == "No data in table") {
-                tableDataElem.appendChild(document.createElement('tr'));
-                tableDataElem.lastChild.appendChild(document.createElement('td'));
-                tableDataElem.lastChild.lastChild.innerHTML = "No data in table";
-
-                return;
-            };
-            data.forEach(row => {
-                tableDataElem.appendChild(document.createElement('tr'));
-                currTableKeys.forEach(key => {
-                    tableDataElem.lastChild.appendChild(document.createElement('td'));
-                    tableDataElem.lastChild.lastChild.innerHTML = row[key];
-                });
-            });
-        }
-        )
-
-}
+  
+        const headerRowElem = document.createElement('tr');
+        currTableKeys.forEach(key => {
+          const headerCellElem = document.createElement('th');
+          headerCellElem.innerHTML = key;
+          headerRowElem.appendChild(headerCellElem);
+        });
+        tableDataElem.appendChild(headerRowElem);
+  
+        data.forEach(row => {
+          const rowElem = document.createElement('tr');
+          currTableKeys.forEach(key => {
+            const cellElem = document.createElement('td');
+            cellElem.innerHTML = row[key];
+            rowElem.appendChild(cellElem);
+          });
+          tableDataElem.appendChild(rowElem);
+        });
+      })
+      .catch(error => console.error(error));
+  }
+  
 

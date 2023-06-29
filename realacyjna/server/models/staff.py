@@ -1,5 +1,6 @@
 import sqlite3
 
+
 class StaffModel:
     def __init__(self):
         self.connection = sqlite3.connect('baza.db', isolation_level=None)
@@ -54,3 +55,30 @@ class StaffModel:
 
     def __del__(self):
         self.connection.close()
+
+    def read_by_query(self, name=None, surname=None):
+        query = 'SELECT * FROM staff'
+        conditions = []
+        values = []
+
+        if name:
+            conditions.append('name = ?')
+            values.append(name)
+        if surname:
+            conditions.append('surname = ?')
+            values.append(surname)
+
+        if conditions:
+            query += ' WHERE ' + ' AND '.join(conditions)
+
+        self.cursor.execute(query, values)
+        result = self.cursor.fetchall()
+        staff_list = []
+        for row in result:
+            staff = {
+                'id': row[0],
+                'name': row[1],
+                'surname': row[2]
+            }
+            staff_list.append(staff)
+        return staff_list

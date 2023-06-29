@@ -29,20 +29,21 @@ class MajorModel:
         query = 'SELECT * FROM major'
         conditions = []
         values = []
+
         if name:
-            conditions.append('name = ?')
+            conditions.append('name LIKE ?')
             values.append(name)
         if department:
-            conditions.append('department = ?')
+            conditions.append('department LIKE ?')
             values.append(department)
         if email:
-            conditions.append('email = ?')
+            conditions.append('email LIKE ?')
             values.append(email)
         if phone:
-            conditions.append('phone = ?')
+            conditions.append('phone LIKE ?')
             values.append(phone)
         if office:
-            conditions.append('office = ?')
+            conditions.append('office LIKE ?')
             values.append(office)
         if staff_id:
             conditions.append('staff_id = ?')
@@ -52,11 +53,22 @@ class MajorModel:
             values.append(university_id)
         if conditions:
             query += ' WHERE ' + ' AND '.join(conditions)
+
         result = self.db.execute(query, values).fetchone()
+
         if result:
-            major = {'id': result[0], 'name': result[1], 'department': result[2], 'email': result[3], 'phone': result[4],
-                     'office': result[5], 'staff_id': result[6], 'university_id': result[7]}
+            major = {
+                'id': result[0],
+                'name': result[1],
+                'department': result[2],
+                'email': result[3],
+                'phone': result[4],
+                'office': result[5],
+                'staff_id': result[6],
+                'university_id': result[7]
+            }
             return major
+
         return None
 
     def update(self, id, name=None, department=None, email=None, phone=None, office=None, hire_date=None, staff_id=None,
