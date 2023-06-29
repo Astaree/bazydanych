@@ -1,299 +1,268 @@
 currTableKeys = [];
-function getTable(table) {
-    fetch(`/api/${table}`)
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('find_table').innerHTML = '';
-            // update the table data placeholder with the new data
-            const nav_table = document.getElementById('nav_table');
-            nav_table.innerHTML = '';
 
-            let li = document.createElement('li');
-            let btn = document.createElement('button');
-            btn.innerHTML = "Create element";
-            btn.setAttribute('onclick', `openModal("create", '${table}')`);
-            li.appendChild(btn);
-            nav_table.appendChild(li);
-
-            li = document.createElement('li');
-            btn = document.createElement('button');
-            btn.innerHTML = "Delete element";
-            btn.setAttribute('onclick', `openModal("delete",'${table}')`);
-            li.appendChild(btn);
-            nav_table.appendChild(li);
-
-            li = document.createElement('li');
-            btn = document.createElement('button');
-            btn.innerHTML = "Update element";
-            btn.setAttribute('onclick', `openModal("update",'${table}')`);
-            li.appendChild(btn);
-            nav_table.appendChild(li);
-
-
-            let keys;
-            //check if data is empty
-            if (data.message == "No data in table") {
-                keys = data.keys;
-                currTableKeys = keys;
-            } else {
-                keys = JSON.stringify(Object.keys(data[0]));
-                keys = keys.replace(/[\[\]"]+/g, '');
-                keys = keys.split(',');
-                currTableKeys = keys;
-            }
-            if (table != "students_major" && table != "students_dormitory") {
-                //update search bar with the new keys
-                const find_table = document.getElementById('find_table');
-                find_table.innerHTML = '';
-                find_table.appendChild(document.createElement('tr'));
-                keys.forEach(key => {
-                    find_table.lastChild.appendChild(document.createElement('th'));
-                    find_table.lastChild.lastChild.appendChild(document.createElement('input'));
-                    find_table.lastChild.lastChild.lastChild.setAttribute('type', 'text');
-                    find_table.lastChild.lastChild.lastChild.setAttribute('placeholder', key);
-                    find_table.lastChild.lastChild.lastChild.setAttribute('name', key);
-                }
-                );
-                find_table.lastChild.appendChild(document.createElement('th'));
-                find_table.lastChild.lastChild.appendChild(document.createElement('button'));
-                find_table.lastChild.lastChild.lastChild.innerHTML = "Find";
-                find_table.lastChild.lastChild.lastChild.setAttribute('onclick', `filter('${table}')`);
-            }
-
-            // update the content table headers with the new keys and 
-            //fill the table with the  data
-
-            const tableDataElem = document.getElementById('table-data');
-            tableDataElem.innerHTML = '';
-            tableDataElem.appendChild(document.createElement('tr'));
-            if (table != "students_major" && table != "students_dormitory") {
-                keys.forEach(key => {
-                    tableDataElem.lastChild.appendChild(document.createElement('th'));
-                    tableDataElem.lastChild.lastChild.innerHTML = key;
-                });
-
-                if (data.message == "No data in table") {
-                    tableDataElem.appendChild(document.createElement('tr'));
-                    tableDataElem.lastChild.appendChild(document.createElement('td'));
-                    tableDataElem.lastChild.lastChild.innerHTML = "No data in table";
-
-                    return;
-                };
-                data.forEach(row => {
-                    tableDataElem.appendChild(document.createElement('tr'));
-                    keys.forEach(key => {
-                        tableDataElem.lastChild.appendChild(document.createElement('td'));
-                        tableDataElem.lastChild.lastChild.innerHTML = row[key];
-                    });
-                });
-            } else {
-                tableHead = document.createElement('thead');
-                tableHead.setAttribute('id', 'table-head');
-                keys.forEach(key => {
-                    if (key == "id") return;
-                    if (key == "student_id" || key == "major_id" || key == "dormitory_id") {
-                        tableHead.appendChild(document.createElement('th'));
-                        tableHead.lastChild.innerHTML = key.split('_')[0];
-                        return;
-                    };
-                    tableHead.appendChild(document.createElement('th'));
-                    tableHead.lastChild.innerHTML = key;
-                });
-                tableDataElem.appendChild(tableHead);
-
-                if (data.message == "No data in table") {
-                    tableDataElem.appendChild(document.createElement('tr'));
-                    tableDataElem.lastChild.appendChild(document.createElement('td'));
-                    tableDataElem.lastChild.lastChild.innerHTML = "No data in table";
-                    return;
-                };
-
-                data.forEach(row => {
-                    console.log(row);
-                    tableDataElem.appendChild(document.createElement('tr'));
-                    keys.forEach(key => {
-                        if (key == "student_id" || key == "major_id" || key == "dormitory_id") {
-                            if (key == "student_id") {
-                                fetch(`/api/students/${row[key]}`)
-                                    .then(response => response.json())
-                                    .then((data) => {
-                                        let counter = 0;
-                                        keys = JSON.stringify(Object.keys(data));
-                                        keys = keys.replace(/[\[\]"]+/g, '');
-                                        keys = keys.split(',');
-                                        keys.forEach(key => {
-                                            if (key == "date_of_birth" || key == "gender" || key == "join_date" || key == "semester") return;
-                                            tableDataElem.lastChild.appendChild(document.createElement('td'));
-                                            tableDataElem.lastChild.lastChild.innerHTML = data[key];
-                                            counter += 1;
-                                        });
-                                        document.getElementById('table-head').childNodes.forEach(node => {
-                                            if (node.innerHTML == "student") {
-                                                node.setAttribute('colspan', counter);
-                                            }
-                                        });
-                                    });
-                                console.log(document.getElementById('table-head').childNodes);
-                            }
-                            if (key == "major_id") {
-                                fetch(`/api/majors/${row[key]}`)
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        let counter = 0;
-                                        keys = JSON.stringify(Object.keys(data));
-                                        keys = keys.replace(/[\[\]"]+/g, '');
-                                        keys = keys.split(',');
-                                        keys.forEach(key => {
-                                            if (key == "staff_id" || key == "university_id" || key == "office") return;
-                                            tableDataElem.lastChild.appendChild(document.createElement('td'));
-                                            tableDataElem.lastChild.lastChild.innerHTML = data[key];
-                                            counter += 1;
-                                        });
-                                        document.getElementById('table-head').childNodes.forEach(node => {
-                                            if (node.innerHTML == "major") {
-                                                node.setAttribute('colspan', counter);
-                                            }
-                                        });
-                                    });
-
-                            }
-                            if (key == "dormitory_id") {
-                                fetch(`/api/dormitories/${row[key]}`)
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        let counter = 0;
-                                        keys = JSON.stringify(Object.keys(data));
-                                        keys = keys.replace(/[\[\]"]+/g, '');
-                                        keys = keys.split(',');
-                                        keys.forEach(key => {
-                                            if (key == "occupancy" || key == "capacity" || key == "zip" || key == "state") return;
-                                            tableDataElem.lastChild.appendChild(document.createElement('td'));
-                                            tableDataElem.lastChild.lastChild.innerHTML = data[key];
-                                            counter += 1;
-                                        });
-                                        document.getElementById('table-head').childNodes.forEach(node => {
-                                            if (node.innerHTML == "dormitory") {
-                                                node.setAttribute('colspan', counter);
-                                            }
-                                        });
-                                    });
-                            }
-                        }
-                    });
-
-                    
-                    
-                });
-            }
-        })
-        .catch(error => console.error(error));
+function createElement(tag, attributes = {}, innerHTML = '') {
+    const element = document.createElement(tag);
+    for (let attr in attributes) {
+        element.setAttribute(attr, attributes[attr]);
+    }
+    element.innerHTML = innerHTML;
+    return element;
 }
 
-function openModal(action, table) {
-    let dialog = document.querySelector('dialog');
-    let form = document.getElementById('input_form');
-    form.innerHTML = '';
-    switch (action) {
-        case "create":
-            currTableKeys.forEach(key => {
-                if (key == "id" || key == "student_count" || key == "join_date" || key == "semester") return;
-                form.appendChild(document.createElement('label'));
-                form.lastChild.innerHTML = key;
-                if (key != "staff_id" && key != "student_id" && key != "major_id" && key != "dormitory_id" && key != "university_id") {
-                    form.appendChild(document.createElement('input'));
-                    form.lastChild.setAttribute('name', key);
-                    form.lastChild.setAttribute('type', 'text');
-                    form.lastChild.setAttribute('placeholder', key);
+async function getTable(table) {
+    try {
+        const response = await fetch(`/api/${table}`);
+        const data = await response.json();
+
+        const find_table = document.getElementById('find_table');
+        const nav_table = document.getElementById('nav_table');
+        const tableDataElem = document.getElementById('table-data');
+
+        find_table.innerHTML = '';
+        nav_table.innerHTML = '';
+        tableDataElem.innerHTML = '';
+
+        const createButton = createElement('button', {
+            onclick: `openModal("create", '${table}')`
+        }, 'Create element');
+        const deleteButton = createElement('button', {
+            onclick: `openModal("delete", '${table}')`
+        }, 'Delete element');
+        const updateButton = createElement('button', {
+            onclick: `openModal("update", '${table}')`
+        }, 'Update element');
+
+        nav_table.append(createElement('li', {}, createButton.outerHTML));
+        nav_table.append(createElement('li', {}, deleteButton.outerHTML));
+        nav_table.append(createElement('li', {}, updateButton.outerHTML));
+
+        let keys = [];
+        let hasData = true;
+
+        if (data.message === "No data in table") {
+            keys = data.keys;
+            currTableKeys = keys;
+        } else {
+            keys = Object.keys(data[0]);
+            currTableKeys = keys;
+        }
+
+        if (table !== "students_major" && table !== "students_dormitory") {
+            keys.forEach(key => {
+                const input = createElement('input', {
+                    type: 'text',
+                    placeholder: key,
+                    name: key
+                });
+                find_table.append(createElement('th', {}, input.outerHTML));
+            });
+
+            const findButton = createElement('button', {
+                onclick: `filter('${table}')`
+            }, 'Find');
+            find_table.append(createElement('th', {}, findButton.outerHTML));
+        }
+
+        if (data.message === "No data in table") {
+            tableDataElem.append(createElement('tr'));
+            const noDataCell = createElement('td', {}, 'No data in table');
+            tableDataElem.lastChild.append(noDataCell);
+            return;
+        }
+
+        if (table !== "students_major" && table !== "students_dormitory") {
+            keys.forEach(key => {
+                tableDataElem.append(createElement('th', {}, key));
+            });
+
+            data.forEach(row => {
+                const rowElement = createElement('tr');
+                keys.forEach(key => {
+                    const cell = createElement('td', {}, row[key]);
+                    rowElement.append(cell);
+                });
+                tableDataElem.append(rowElement);
+            });
+        } else {
+            const tableHead = createElement('thead', { id: 'table-head' });
+            keys.forEach(key => {
+                if (key === "id") return;
+                if (key === "student_id" || key === "major_id" || key === "dormitory_id") {
+                    const th = createElement('th', {}, key.split('_')[0]);
+                    tableHead.append(th);
                 } else {
-                    console.log(key);
-                    let select = document.createElement('select');
+                    const th = createElement('th', {}, key);
+                    tableHead.append(th);
+                }
+            });
+            tableDataElem.append(tableHead);
+
+            for (const row of data) {
+                const rowElement = createElement('tr');
+                for (const key of keys) {
+                    if (key === "student_id" || key === "major_id" || key === "dormitory_id") {
+                        let id;
+                        if (key === "student_id") {
+                            id = row[key];
+                            const studentResponse = await fetch(`/api/students/${id}`);
+                            const studentData = await studentResponse.json();
+                            const studentKeys = Object.keys(studentData).filter(k => {
+                                return (
+                                    k !== "date_of_birth" &&
+                                    k !== "gender" &&
+                                    k !== "join_date" &&
+                                    k !== "semester"
+                                );
+                            });
+                            studentKeys.forEach(studentKey => {
+                                const cell = createElement('td', {}, studentData[studentKey]);
+                                rowElement.append(cell);
+                            });
+                            const colspan = studentKeys.length;
+                            document.getElementById('table-head').childNodes.forEach(node => {
+                                if (node.innerHTML === "student") {
+                                    node.setAttribute('colspan', colspan);
+                                }
+                            });
+                        } else if (key === "major_id") {
+                            id = row[key];
+                            const majorResponse = await fetch(`/api/majors/${id}`);
+                            const majorData = await majorResponse.json();
+                            const majorKeys = Object.keys(majorData).filter(k => {
+                                return (
+                                    k !== "staff_id" &&
+                                    k !== "university_id" &&
+                                    k !== "office"
+                                );
+                            });
+                            majorKeys.forEach(majorKey => {
+                                const cell = createElement('td', {}, majorData[majorKey]);
+                                rowElement.append(cell);
+                            });
+                            const colspan = majorKeys.length;
+                            document.getElementById('table-head').childNodes.forEach(node => {
+                                if (node.innerHTML === "major") {
+                                    node.setAttribute('colspan', colspan);
+                                }
+                            });
+                        } else if (key === "dormitory_id") {
+                            id = row[key];
+                            const dormitoryResponse = await fetch(`/api/dormitories/${id}`);
+                            const dormitoryData = await dormitoryResponse.json();
+                            const dormitoryKeys = Object.keys(dormitoryData).filter(k => {
+                                return (
+                                    k !== "occupancy" &&
+                                    k !== "capacity" &&
+                                    k !== "zip" &&
+                                    k !== "state"
+                                );
+                            });
+                            dormitoryKeys.forEach(dormitoryKey => {
+                                const cell = createElement('td', {}, dormitoryData[dormitoryKey]);
+                                rowElement.append(cell);
+                            });
+                            const colspan = dormitoryKeys.length;
+                            document.getElementById('table-head').childNodes.forEach(node => {
+                                if (node.innerHTML === "dormitory") {
+                                    node.setAttribute('colspan', colspan);
+                                }
+                            });
+                        }
+                    }
+                }
+                tableDataElem.append(rowElement);
+            }
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+
+function openModal(action, table) {
+    const dialog = document.querySelector('dialog');
+    const form = document.getElementById('input_form');
+    form.innerHTML = '';
+
+    const createLabelInput = (label, name, type, placeholder) => {
+        form.appendChild(document.createElement('label'));
+        form.lastChild.innerHTML = label;
+        form.appendChild(document.createElement('input'));
+        form.lastChild.setAttribute('name', name);
+        form.lastChild.setAttribute('type', type);
+        form.lastChild.setAttribute('placeholder', placeholder);
+    };
+
+    const createSelectOptions = (select, data) => {
+        if (data.message === 'No data in table') return;
+        data.forEach(element => {
+            const keys = Object.keys(data[0]);
+            const elementFormat = keys.map(key => `${key}: ${element[key]}`).join(', ');
+            select.appendChild(document.createElement('option'));
+            select.lastChild.innerHTML = elementFormat;
+        });
+    };
+
+    switch (action) {
+        case 'create':
+            currTableKeys.forEach(key => {
+                if (key === 'id' || key === 'student_count' || key === 'join_date' || key === 'semester') return;
+                if (key !== 'staff_id' && key !== 'student_id' && key !== 'major_id' && key !== 'dormitory_id' && key !== 'university_id') {
+                    createLabelInput(key, key, 'text', key);
+                } else {
+                    const select = document.createElement('select');
                     select.setAttribute('id', `${key}_select`);
                     select.setAttribute('type', 'text');
                     select.setAttribute('placeholder', key);
 
                     fetch(`/api/${key.split('_')[0]}`)
                         .then(response => response.json())
-                        .then(data => {
-                            if (data.message == "No data in table") return;
-                            data.forEach(element => {
-                                let keys = JSON.stringify(Object.keys(data[0]));
-                                keys = keys.replace(/[\[\]"]+/g, '');
-                                keys = keys.split(',');
-                                let elementForat = "";
-                                keys.forEach(key => {
-                                    elementForat += `, ${key}: ${element[key]}`;
-                                });
-                                elementForat = elementForat.substring(2);
-                                select.appendChild(document.createElement('option'));
-                                select.lastChild.innerHTML = elementForat;
-                            });
-                        }).then(() => {
-                        })
+                        .then(data => createSelectOptions(select, data))
                         .catch(error => console.error(error));
+
                     form.appendChild(select);
                 }
             });
-            form.appendChild(document.createElement('button'));
-            form.lastChild.innerHTML = "Create";
+            createLabelInput('', '', '', '');
+            form.lastChild.innerHTML = 'Create';
             form.lastChild.setAttribute('onclick', `createNew('${table}')`);
             break;
-        case "delete":
-            form.appendChild(document.createElement('label'));
-            form.lastChild.innerHTML = "id";
-            form.appendChild(document.createElement('input'));
-            form.lastChild.setAttribute('name', 'id');
-            form.lastChild.setAttribute('type', 'text');
-            form.lastChild.setAttribute('placeholder', 'id');
-            form.appendChild(document.createElement('button'));
-            form.lastChild.innerHTML = "Delete";
+
+        case 'delete':
+            createLabelInput('id', 'id', 'text', 'id');
+            createLabelInput('', '', '', '');
+            form.lastChild.innerHTML = 'Delete';
             form.lastChild.setAttribute('onclick', `deleteElement('${table}')`);
             break;
-        case "update":
+
+        case 'update':
             currTableKeys.forEach(key => {
-                if (key == "student_count" || key == "join_date" || key == "semester" || key == "leave_date") return;
-                form.appendChild(document.createElement('label'));
-                form.lastChild.innerHTML = key;
-                if (key != "staff_id" && key != "student_id" && key != "major_id" && key != "dormitory_id" && key != "university_id") {
-                    form.appendChild(document.createElement('input'));
-                    form.lastChild.setAttribute('name', key);
-                    form.lastChild.setAttribute('type', 'text');
-                    form.lastChild.setAttribute('placeholder', key);
+                if (key === 'student_count' || key === 'join_date' || key === 'semester' || key === 'leave_date') return;
+                if (key !== 'staff_id' && key !== 'student_id' && key !== 'major_id' && key !== 'dormitory_id' && key !== 'university_id') {
+                    createLabelInput(key, key, 'text', key);
                 } else {
-                    console.log(key);
-                    let select = document.createElement('select');
+                    const select = document.createElement('select');
                     select.setAttribute('id', `${key}_select`);
                     select.setAttribute('type', 'text');
                     select.setAttribute('placeholder', key);
 
                     fetch(`/api/${key.split('_')[0]}`)
                         .then(response => response.json())
-                        .then(data => {
-                            if (data.message == "No data in table") return;
-                            data.forEach(element => {
-                                let keys = JSON.stringify(Object.keys(data[0]));
-                                keys = keys.replace(/[\[\]"]+/g, '');
-                                keys = keys.split(',');
-                                let elementForat = "";
-                                keys.forEach(key => {
-                                    elementForat += `, ${key}: ${element[key]}`;
-                                });
-                                elementForat = elementForat.substring(2);
-                                select.appendChild(document.createElement('option'));
-                                select.lastChild.innerHTML = elementForat;
-                            });
-                        }).then(() => {
-                        })
+                        .then(data => createSelectOptions(select, data))
                         .catch(error => console.error(error));
+
                     form.appendChild(select);
                 }
             });
-            form.appendChild(document.createElement('button'));
-            form.lastChild.innerHTML = "Update";
+            createLabelInput('', '', '', '');
+            form.lastChild.innerHTML = 'Update';
             form.lastChild.setAttribute('onclick', `updateElement('${table}')`);
             break;
+
         default:
             break;
     }
+
     dialog.showModal();
 }
 
