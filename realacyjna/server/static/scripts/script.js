@@ -184,79 +184,100 @@ function openModal(action, table) {
     const form = document.getElementById('input_form');
     form.innerHTML = '';
 
-    const createLabelInput = (label, name, type, placeholder) => {
-        form.appendChild(document.createElement('label'));
-        form.lastChild.innerHTML = label;
-        form.appendChild(document.createElement('input'));
-        form.lastChild.setAttribute('name', name);
-        form.lastChild.setAttribute('type', type);
-        form.lastChild.setAttribute('placeholder', placeholder);
-    };
-
-    const createSelectOptions = (select, data) => {
-        if (data.message === 'No data in table') return;
-        data.forEach(element => {
-            const keys = Object.keys(data[0]);
-            const elementFormat = keys.map(key => `${key}: ${element[key]}`).join(', ');
-            select.appendChild(document.createElement('option'));
-            select.lastChild.innerHTML = elementFormat;
+    function createFormElement(type, attributes) {
+        const element = document.createElement(type);
+        Object.entries(attributes).forEach(([key, value]) => {
+            element.setAttribute(key, value);
         });
-    };
+        return element;
+    }
+
+    function createLabel(key) {
+        const label = createFormElement('label', {});
+        label.innerHTML = key;
+        return label;
+    }
+
+    function createTextInput(name, placeholder) {
+        const input = createFormElement('input', {
+            type: 'text',
+            name: name,
+            placeholder: placeholder,
+        });
+        return input;
+    }
+
+    function createDropdownSelect(key, data) {
+        const select = createFormElement('select', {
+            id: `${key}_select`,
+        });
+
+        if (data.message == "No data in table") return select;
+
+        const keys = Object.keys(data[0]);
+
+        data.forEach(element => {
+            let option = createFormElement('option', {});
+            let elementFormat = keys
+                .filter(k => k !== "id") // Exclude the "id" column from the display
+                .map(k => `${k}: ${element[k]}`)
+                .join(', ');
+            option.innerHTML = elementFormat;
+            select.appendChild(option);
+        });
+
+        return select;
+    }
+
+    function createButton(label, onclick) {
+        const button = createFormElement('button', {
+            onclick: onclick,
+        });
+        button.innerHTML = label;
+        return button;
+    }
 
     switch (action) {
-        case 'create':
+        case "create":
             currTableKeys.forEach(key => {
-                if (key === 'id' || key === 'student_count' || key === 'join_date' || key === 'semester') return;
-                if (key !== 'staff_id' && key !== 'student_id' && key !== 'major_id' && key !== 'dormitory_id' && key !== 'university_id') {
-                    createLabelInput(key, key, 'text', key);
+                if (key == "id" || key == "student_count" || key == "join_date" || key == "semester") return;
+                form.appendChild(createLabel(key));
+                if (key != "staff_id" && key != "student_id" && key != "major_id" && key != "dormitory_id" && key != "university_id") {
+                    form.appendChild(createTextInput(key, key));
                 } else {
-                    const select = document.createElement('select');
-                    select.setAttribute('id', `${key}_select`);
-                    select.setAttribute('type', 'text');
-                    select.setAttribute('placeholder', key);
-
                     fetch(`/api/${key.split('_')[0]}`)
                         .then(response => response.json())
-                        .then(data => createSelectOptions(select, data))
+                        .then(data => {
+                            form.appendChild(createDropdownSelect(key, data));
+                        })
                         .catch(error => console.error(error));
-
-                    form.appendChild(select);
                 }
             });
-            createLabelInput('', '', '', '');
-            form.lastChild.innerHTML = 'Create';
-            form.lastChild.setAttribute('onclick', `createNew('${table}')`);
+            form.appendChild(createButton("Create", `createNew('${table}')`));
             break;
 
-        case 'delete':
-            createLabelInput('id', 'id', 'text', 'id');
-            createLabelInput('', '', '', '');
-            form.lastChild.innerHTML = 'Delete';
-            form.lastChild.setAttribute('onclick', `deleteElement('${table}')`);
+        case "delete":
+            form.appendChild(createLabel("id"));
+            form.appendChild(createTextInput("id", "id"));
+            form.appendChild(createButton("Delete", `deleteElement('${table}')`));
             break;
 
-        case 'update':
+        case "update":
             currTableKeys.forEach(key => {
-                if (key === 'student_count' || key === 'join_date' || key === 'semester' || key === 'leave_date') return;
-                if (key !== 'staff_id' && key !== 'student_id' && key !== 'major_id' && key !== 'dormitory_id' && key !== 'university_id') {
-                    createLabelInput(key, key, 'text', key);
+                if (key == "student_count" || key == "join_date" || key == "semester" || key == "leave_date") return;
+                form.appendChild(createLabel(key));
+                if (key != "staff_id" && key != "student_id" && key != "major_id" && key != "dormitory_id" && key != "university_id") {
+                    form.appendChild(createTextInput(key, key));
                 } else {
-                    const select = document.createElement('select');
-                    select.setAttribute('id', `${key}_select`);
-                    select.setAttribute('type', 'text');
-                    select.setAttribute('placeholder', key);
-
                     fetch(`/api/${key.split('_')[0]}`)
                         .then(response => response.json())
-                        .then(data => createSelectOptions(select, data))
+                        .then(data => {
+                            form.appendChild(createDropdownSelect(key, data));
+                        })
                         .catch(error => console.error(error));
-
-                    form.appendChild(select);
                 }
             });
-            createLabelInput('', '', '', '');
-            form.lastChild.innerHTML = 'Update';
-            form.lastChild.setAttribute('onclick', `updateElement('${table}')`);
+            form.appendChild(createButton("Update", `updateElement('${table}')`));
             break;
 
         default:

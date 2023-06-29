@@ -25,7 +25,7 @@ class University(Resource):
         return {'message': 'University not found'}, 404
 
     def put(self, id):
-        data = University.parser.parse_args()
+        data = request.get_json()
         name = data['name']
         location = data['location']
         dean_name = data['dean_name']
@@ -63,15 +63,13 @@ class UniversityList(Resource):
 
     # POST /university
     def post(self):
-        data = University.parser.parse_args()
-        id = data['id']
+        data = request.get_json()
         name = data['name']
         location = data['location']
         dean_name = data['dean_name']
-        student_count = data['student_count']
         max_students = data['max_students']
 
-        self.model.create(name, location, dean_name)
+        self.model.create(name, location, dean_name,  max_students)
         return {'message': 'University created successfully.'}, 201
 
 

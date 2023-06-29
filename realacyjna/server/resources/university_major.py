@@ -17,7 +17,7 @@ class UniversityMajor(Resource):
     def put(self,id):
         university_major = self.model.read_one(id)
         if university_major:
-            data = UniversityMajor.parser.parse_args()
+            data = request.get_json()
             university_id = data['university_id']
             major_id = data['major_id']
             self.model.update(id, university_id, major_id)
@@ -54,7 +54,7 @@ class UniversityMajorList(Resource):
         university_major = self.model.read_one(id)
         if university_major:
             return {'message': 'University Major already exists'}, 400
-        data = UniversityMajor.parser.parse_args()
+        data = request.get_json()
         university_id = data['university_id']
         major_id = data['major_id']
         self.model.create(university_id, major_id)

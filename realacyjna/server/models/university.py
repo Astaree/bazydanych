@@ -6,9 +6,9 @@ class UniversityModel:
     def __init__(self):
         self.db = Database('baza.db')
 
-    def create(self, name, location, dean_name):
+    def create(self, name, location, dean_name,  max_students):
         query = 'INSERT INTO university (name, location, dean_name,  max_students) VALUES (?, ?, ?, ?)'
-        self.db.execute(query, (name, location, dean_name))
+        self.db.execute(query, (name, location, dean_name,  max_students))
         self.db.commit()
 
     def read_all(self):
