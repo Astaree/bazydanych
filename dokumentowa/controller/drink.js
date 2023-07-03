@@ -18,14 +18,6 @@ async function addDrink(drink) {
     }
 }
 
-async function deleteDrinks() {
-    try {
-        const drinks = await Drink.deleteMany();
-        return drinks;
-    } catch (err) {
-        return err;
-    }
-}
 
 async function getDrinkById(id) {
     try {
@@ -36,25 +28,9 @@ async function getDrinkById(id) {
     }
 }
 
-async function updateDrinkById(id, drink) {
-    try {
-        await Drink.updateOne({ _id: id }, drink).then(
-            (result) => {
-                return result;
-            }
-        );
-    } catch (err) {
-        return err;
-    }
-}
-
 async function deleteDrinkById(id) {
     try {
-        await Drink.deleteOne({ _id: id }).then(
-            (result) => {
-                return result;
-            }
-        );
+        await Drink.findByIdAndUpdate(id, { isDeleted: true });
     } catch (err) {
         return err;
     }
@@ -63,8 +39,6 @@ async function deleteDrinkById(id) {
 module.exports = {
     getDrinks,
     addDrink,
-    deleteDrinks,
     getDrinkById,
-    updateDrinkById,
     deleteDrinkById
 }

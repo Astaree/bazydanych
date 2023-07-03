@@ -8,7 +8,7 @@ const orderSchema = new mongoose.Schema({
         required: true,
     },
     //ref to drink
-    drink: [{
+    drinks: [{
         quantity: Number,
         drink: {
             type: mongoose.Schema.Types.ObjectId,
@@ -17,7 +17,7 @@ const orderSchema = new mongoose.Schema({
         }
     }],
     //ref to meal
-    meal: [
+    meals: [
         {
             quantity: Number,
             meal:
