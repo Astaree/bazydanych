@@ -75,7 +75,7 @@ class UniversityModel:
         return universities
 
 
-    def update(self, id, name=None, location=None, dean_name=None):
+    def update(self, id, name=None, location=None, dean_name=None, max_students=None):
         query = 'UPDATE university SET '
         if name:
             query += 'name = ?, '
@@ -83,8 +83,10 @@ class UniversityModel:
             query += 'location = ?, '
         if dean_name:
             query += 'dean_name = ?, '
+        if max_students:
+            query += 'max_students = ?, '
         query = query.rstrip(', ') + ' WHERE id = ?'
-        values = tuple(filter(None, [name, location, dean_name, id]))
+        values = tuple(filter(None, [name, location, dean_name, max_students, id]))
         self.db.execute(query, values)
         self.db.commit()
 

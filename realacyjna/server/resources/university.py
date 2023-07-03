@@ -29,9 +29,10 @@ class University(Resource):
         name = data['name']
         location = data['location']
         dean_name = data['dean_name']
+        max_students = data['max_students']
 
         if self.model.read_one(id):
-            self.model.update(id, name, location, dean_name)
+            self.model.update(id, name, location, dean_name, max_students)
             return {'message': 'University updated successfully.'}, 200
         return {'message': 'University not found.'}, 404
 
