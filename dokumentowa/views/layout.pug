@@ -1,0 +1,17 @@
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/style.css')
+  body
+    ul.nav.navbar-nav.navbar-right
+      li
+        a(href='/') Home
+      li
+        a(href='/api/clients') Clients
+      li
+        a(href='/api/meals') Meals
+      li
+        a(href='/api/orders') Orders
+      li
+        a(href='/api/drinks') Drinks
+    block content

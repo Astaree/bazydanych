@@ -6,18 +6,21 @@ const router = express.Router();
 // Define routes
 router.get("/", (req, res) => {
 
-  res.status(200).json({
-    route: "Home",
-    message: "Welcome to the home page!",
-  });
+  res.render("index", { title: "Home", message: "Hello there!" });
 });
 
 // Example route that interacts with the database
 
-router.use("/api/client", require("./client"));
-router.use("/api/clients", require("./clients"));
-router.use("/api/drinks", require("./drinks"));
-router.use("/api/order", require("./order"));
+router.use("/api/clients", require("./api/client/clients"));
+router.use("/api/drinks", require("./api/drinks/drinks"));
+router.use("/api/orders", require("./api/order/orders"));
+router.use("/api/meals", require("./api/meals/meals"));
+
+router.use("/api/del/clients", require("./api/client/del_client"));
+router.use("/api/del/drinks", require("./api/drinks/del_drinks"));
+
+router.use("/api/new_order", require("./api/order/new_order"));
+
 // router.use("/api/ingredients", require("./ingredients"));
 // router.use("/api/meal", require("./meal"));
 // router.use("/api/delivery", require("./delivery"));

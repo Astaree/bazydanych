@@ -11,7 +11,6 @@ async function getClients() {
             clients: [],
         }
     }
-
 }
 
 async function getClientById(id) {
@@ -61,7 +60,7 @@ async function deleteClient(id) {
 
 async function getDeleted() {
     try {
-        const clients = await Client.find();
+        const clients = await Client.find({ isDeleted: true });
         return clients;
     } catch (err) {
         return {
@@ -69,10 +68,31 @@ async function getDeleted() {
         }
     }
 }
+
+async function deletePern(id) {
+    try {
+        await Client.findByIdAndDelete(id);
+        return {
+            info: { "message": "Client deleted" },
+            client: {},
+        }
+    } catch (err) {
+        return {
+            client: {},
+        }
+    }
+}
+
+
+
+
+
+
 module.exports = {
     getClients,
     getClientById,
     addClient,
     deleteClient,
     getDeleted,
+    deletePern
 }

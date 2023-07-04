@@ -5,13 +5,15 @@ client is router is base for everything else as its the only one "correct" for n
 need to update: 
 =
 
-[ ] - drinks
+[x] - client
 
-[ ] - order,
+[o] - drinks
 
-[ ] - law,
+[o] - order,
 
-[ ] - delivery
+[o] - law,
+
+[o] - delivery
 
 features to add
 =

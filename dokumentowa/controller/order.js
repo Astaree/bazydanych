@@ -11,32 +11,32 @@ async function getOrders() {
     }
 }
 
-async function addOrder(order) {
-    let newOrder = new Order({
-        client: order.client,
-        meal: order.meal,
-        delivery: order.delivery,
-        price: order.price,
-        date: order.date,
-        status: order.status,
-    });
-
+async function getOrderById(id) {
     try {
-        await newOrder.save((err, order) => {
-            if (err) {
-                return err;
-            }
-            else {
-                return order;
-            }
-        });
-    }
-    catch (err) {
-        return err;
+        const order = await Order.findById(id);
+        return order;
+    } catch (err) {
+        return {
+            order: {},
+        }
     }
 }
 
-    module.exports = {
-        getOrders,
-        addOrder,
+async function addOrder(order) {
+    try {
+        const newOrder = new Order(order);
+        await newOrder.save();
+        return newOrder;
+    } catch (err) {
+        return {
+            order: {},
+        }
     }
+}
+
+
+module.exports = {
+    getOrders,
+    getOrderById,
+    addOrder,
+}

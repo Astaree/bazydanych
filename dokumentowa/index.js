@@ -3,6 +3,7 @@ const router = require('./router/router');
 const morgan = require('morgan');
 const { imortEnv } = require('./config/env');
 const { connectToDatabase } = require('./config/database');
+const mime = require('mime');
 
 
 const env = imortEnv();
@@ -18,6 +19,15 @@ app.use(express.json());
 // Use the router for handling routes
 app.use('/', router);
 
+//file server
+app.use(express.static('public', {
+  setHeaders: (res, path) => {
+    if (mime.getType(path) === 'text/css') {
+      res.setHeader('Content-Type', 'text/css');
+    }
+  }
+}));
+app.set('view engine', 'pug');
 // Start the server
 const port = 3000;
 app.listen(port, () => {

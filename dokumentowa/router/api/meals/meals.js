@@ -1,19 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const Client = require('../controller/client');
+const Meal = require('../../../controller/meal');
 
-
-//get all ingredients
 router.get('/', async (req, res) => {
-  await Client.getDeleted().then((clients) => {
+  await Meal.getMeals().then((meals) => {
     res.status(200).json({
-      route: "Clients",
-      clients: clients
+      route: "Meals",
+      meals: meals
     });
   }
   ).catch((err) => {
     res.status(400).json({
-      route: "Clients",
+      route: "Meals",
       error: err
     });
   }

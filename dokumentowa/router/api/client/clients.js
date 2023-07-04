@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Client = require('../controller/client');
+const Client = require('../../../controller/client');
 
 
 //get all ingredients
