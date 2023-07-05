@@ -27,9 +27,11 @@ class DormitoryModel:
             return {'id': result[0], 'name': result[1], 'address': result[2], 'city': result[3], 'state': result[4], 'zip': result[5],
                     'capacity': result[6], 'occupancy': result[7]}
 
-    def read_by_query(self, name=None, adress=None, city=None, state=None, zip=None, capacity=None,
+    def read_by_query(self, id=None, name=None, adress=None, city=None, state=None, zip=None, capacity=None,
                       occupancy=None):
         query = 'SELECT * FROM dormitory WHERE '
+        if id is not None:
+            query += 'id = ? AND '
         if name:
             query += 'name = ? AND '
         if adress:
@@ -46,7 +48,7 @@ class DormitoryModel:
             query += 'occupancy = ? AND '
         query = query.rstrip(' AND ')
         values = tuple(
-            filter(None, [name, adress, city, state, zip, capacity, occupancy]))
+            filter(None, [name, adress, city, state, zip, capacity, occupancy, id]))
         cursor = self.db.execute(query, values)
         result = cursor.fetchall()
         dorms = []

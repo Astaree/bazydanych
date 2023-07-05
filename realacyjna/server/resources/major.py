@@ -18,12 +18,10 @@ class Major(Resource):
         self.model = MajorModel()
 
     def get(self, id):
-        Major = self.model.read_one(id)
-        if Major:
-            return Major, 200
+        major = self.model.read_one(id)
+        if major:
+            return major, 200
         return {'message': 'Major not found.'}, 404
-
-
     def put(self, id):
         data = Major.parser.parse_args()
         name = data['name']
@@ -34,17 +32,17 @@ class Major(Resource):
         staff_id = data['staff_id']
         university_id = data['university_id']
 
-        Major = self.model.read_one(id)
-        if Major:
+        major = self.model.read_one(id)
+        if major:
             self.model.update(id, name, department, email, phone, office, staff_id, university_id)
             return {'message': 'Major updated successfully.'}, 200
 
-        self.model.create(name, department, email, phone, office, staff_id, university_id)
+        self.model.create(id, name, department, email, phone, office, staff_id, university_id)
         return {'message': 'Major created successfully.'}, 201
 
     def delete(self, id):
-        Major = self.model.read_one(id)
-        if Major:
+        major = self.model.read_one(id)
+        if major:
             self.model.delete(id)
             return {'message': 'Major deleted successfully.'}, 200
         return {'message': 'Major not found.'}, 404
@@ -113,7 +111,7 @@ class MajorQuery(Resource):
         university_id = request.args.get('university_id')
         
 
-        majors = self.model.read_by_query(name, department, email, phone, office, staff_id, university_id)
+        majors = self.model.read_by_query(id, name, department, email, phone, office, staff_id, university_id)
         if majors == []:
             return {'message': 'No data in table',
                     'keys': [

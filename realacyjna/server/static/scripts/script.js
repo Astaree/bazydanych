@@ -313,7 +313,7 @@ function createNew(table) {
     })
         .then(response => response.json())
         .then(data => {
-            console.log(response);
+            console.log(data);
             closeModal();
             getTable(table);
         })
@@ -363,7 +363,7 @@ function updateElement(table) {
     })
         .then(response => {
             response.json()
-            console.log(response);
+            console.log(data);
         })
         .then(data => {
             if (response.status == 404) alert(data.message)
