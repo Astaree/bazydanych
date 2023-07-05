@@ -56,11 +56,14 @@ class StaffModel:
     def __del__(self):
         self.connection.close()
 
-    def read_by_query(self, name=None, surname=None):
+    def read_by_query(self, id=None, name=None, surname=None):
         query = 'SELECT * FROM staff'
         conditions = []
         values = []
 
+        if id:
+            conditions.append('id = ?')
+            values.append(id)
         if name:
             conditions.append('name = ?')
             values.append(name)

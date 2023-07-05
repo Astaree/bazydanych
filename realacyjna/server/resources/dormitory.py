@@ -94,6 +94,7 @@ class DormitoryListQuarry(Resource):
     # GET /dormitory
     def get(self):
             
+        id = request.args.get('id')
         name = request.args.get('name')
         address = request.args.get('address')
         city = request.args.get('city')
@@ -102,7 +103,7 @@ class DormitoryListQuarry(Resource):
         capacity = request.args.get('capacity')
         occupancy = request.args.get('occupancy')
         
-        dormitory = self.model.read_by_query(name, address, city, state, zip, capacity, occupancy)
+        dormitory = self.model.read_by_query(id, name, address, city, state, zip, capacity, occupancy)
         if dormitory == []:
             return {'message': 'No data in table'}, 404
         return dormitory, 200
