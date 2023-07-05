@@ -28,6 +28,25 @@ class UniManagementApp:
 
         self.notebook.bind("<<NotebookTabChanged>>", self.tab_changed)
 
+        # Add Refresh and Set Filter buttons
+        button_frame = ttk.Frame(self.window)
+        button_frame.pack(pady=10)
+
+        refresh_button = ttk.Button(button_frame, text="Refresh", command=self.refresh_tab)
+        refresh_button.pack(side="left", padx=5)
+
+        filter_button = ttk.Button(button_frame, text="Set Filter", command=self.set_filter)
+        filter_button.pack(side="left", padx=5)
+
+        create_button = ttk.Button(button_frame, text="Create entry", command=self.create_entry)
+        create_button.pack(side="left", padx=5)
+
+        update_button = ttk.Button(button_frame, text="Update entry", command=self.update_entry)
+        update_button.pack(side="left", padx=5)
+
+        delete_button = ttk.Button(button_frame, text="Delete entry", command=self.delete_entry)
+        delete_button.pack(side="left", padx=5)
+
     def tab_changed(self, event):
         selected_tab = event.widget.winfo_children()[event.widget.index("current")]
         tab_id = event.widget.index("current")
@@ -65,6 +84,45 @@ class UniManagementApp:
         for col in column_names:
             treeview.heading(col, command=lambda c=col: self.sort_column(treeview, c, False))
 
+    def refresh_tab(self):
+        # Get the currently selected tab
+        tab_id = self.notebook.select()
+        tab_name = self.notebook.tab(tab_id, "text")
+
+        # Perform the refresh operation for the selected tab
+        # Fetch the updated data and display it again
+
+        # Clear existing data in the tab
+        selected_tab = self.notebook.nametowidget(tab_id)
+        for widget in selected_tab.winfo_children():
+            widget.destroy()
+
+        # Get the column names for the selected tab
+        column_names = self.tables[tab_name]
+        num_columns = len(column_names)
+
+        # Create a treeview widget and add data to it
+        treeview = ttk.Treeview(selected_tab, columns=column_names, show="headings")
+        treeview.pack(side="left", fill="both", expand=True)
+
+        # Configure the treeview columns
+        for column in column_names:
+            treeview.heading(column, text=column)
+            treeview.column(column, width=100, anchor="center")
+
+        rows = self.table_data[tab_name]
+        for row in rows:
+            values = []
+            for col, val in enumerate(row):
+                if val is None:
+                    val = ""
+                values.append(val)
+            treeview.insert("", tk.END, values=values)
+
+        # Enable sorting by clicking on column headers
+        for col in column_names:
+            treeview.heading(col, command=lambda c=col: self.sort_column(treeview, c, False))
+
     def sort_column(self, treeview, col, reverse):
         """Sort the treeview contents by the specified column."""
         data = [(treeview.set(child, col), child) for child in treeview.get_children("")]
@@ -75,6 +133,25 @@ class UniManagementApp:
 
         # Reverse sort order for next click on the same column
         treeview.heading(col, command=lambda c=col: self.sort_column(treeview, c, not reverse))
+
+    def set_filter(self):
+        # Code for setting a filter on the current tab
+        # Implement your logic to set a filter for the data displayed in the tab
+
+        # You can access the currently selected tab using:
+        tab_id = self.notebook.select()
+        tab_name = self.notebook.tab(tab_id, "text")
+
+        # Use the tab_name to determine the specific tab on which to apply the filter
+
+    def create_entry(self):
+        None
+
+    def update_entry(self):
+        None
+
+    def delete_entry(self):
+        None
 
     def run(self):
         self.window.mainloop()
