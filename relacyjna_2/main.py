@@ -1,12 +1,12 @@
 import tkinter as tk
 from tkinter import ttk
-from tkinter import Canvas
-from tkinter import Scrollbar
+
 from database import Database
 
 
 class UniManagementApp:
     def __init__(self):
+        self.current_tab = None
         self.db = Database()
         self.tables = {}
         self.table_data = {}  # Store table data in memory
@@ -51,6 +51,7 @@ class UniManagementApp:
         selected_tab = event.widget.winfo_children()[event.widget.index("current")]
         tab_id = event.widget.index("current")
         tab_name = event.widget.tab(tab_id, "text")
+        self.current_tab = tab_name
         print("Selected tab:", tab_name)
 
         # Clear existing columns in the tab
@@ -145,7 +146,45 @@ class UniManagementApp:
         # Use the tab_name to determine the specific tab on which to apply the filter
 
     def create_entry(self):
-        None
+        def create_entry():
+            values = [entry.get() for entry in entries]
+            self.db.filter_query(self.current_tab, columns=self.tables[self.current_tab], query=values)
+
+        entries = []
+        top = tk.Toplevel()
+        top.wm_title("Create entry in {} table".format(self.current_tab))
+        top.wm_minsize(width=600, height=-1)
+        top.grid_columnconfigure(0, weight=1)
+        top.grid_rowconfigure(0, weight=1)
+        top.resizable(False, False)
+
+        content = tk.Frame(top)
+        content.grid(column=0, row=0, sticky="nsew")
+        content.grid_columnconfigure(2, weight=1)  # Configure column 2 to have weight
+
+        for index, column in enumerate(self.tables[self.current_tab]):
+            label = tk.Label(content, text=column)
+            label.grid(row=index, column=1)
+
+            entry = tk.Entry(content)
+            entry.grid(row=index, column=2, sticky="we", padx=10, pady=(1, 2))
+            entries.append(entry)
+
+        button_frame = tk.Frame(top)
+        button_frame.grid(row=1, column=0)
+
+        create_button = ttk.Button(button_frame, text="Create", command=lambda: create_entry())
+        create_button.pack(side="left", padx=5)
+
+        clear_button = ttk.Button(button_frame, text="Clear", command=None)
+        clear_button.pack(side="left", padx=5)
+
+        cancel_button = ttk.Button(button_frame, text="Cancel", command=None)
+        cancel_button.pack(side="left", padx=5)
+
+        content.grid(sticky="nsew")
+
+        top.mainloop()
 
     def update_entry(self):
         None

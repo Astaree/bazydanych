@@ -26,3 +26,20 @@ class Database:
         self.cursor.execute(sql_query)
         result = self.cursor.fetchall()
         return result
+
+    def filter_query(self, table: str = None, columns=[], query=[]):
+        query_data = {}
+        sql_query = ""
+        for i, q in enumerate(query):
+            if q != '':
+                query_data[columns[i]] = q
+
+        if len(query_data) > 0:
+            sql_query = "SELECT * FROM {} WHERE".format(table)
+
+            for quest in query_data:
+                quest_str = " {} = {} AND".format(quest, query_data[quest])
+                sql_query += quest_str
+
+            sql_query = sql_query[:-4]
+            print(sql_query)
