@@ -7,7 +7,7 @@ const orderSchema = new mongoose.Schema({
         ref: 'Client',
         required: true,
     },
-    //ref to drink
+    //ref to drinks
     drinks: [{
         quantity: Number,
         drink: {

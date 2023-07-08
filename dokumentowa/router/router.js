@@ -20,6 +20,7 @@ router.use("/api/del/clients", require("./api/client/del_client"));
 router.use("/api/del/drinks", require("./api/drinks/del_drinks"));
 
 router.use("/api/new_order", require("./api/order/new_order"));
+router.use("/api/new_drink", require("./api/drinks/new_drink"));
 
 // router.use("/api/ingredients", require("./ingredients"));
 // router.use("/api/meal", require("./meal"));
