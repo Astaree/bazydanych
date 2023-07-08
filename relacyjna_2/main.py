@@ -1,19 +1,26 @@
 import tkinter as tk
 from tkinter import ttk
 import re
+import tkinter.font as tk_font
 
 from database import Database
+
+
+class ToolTip(tk.Toplevel):
+    def __init__(self, parent, text, x, y):
+        tk.Toplevel.__init__(self, parent)
+        self.wm_overrideredirect(True)
+        self.wm_geometry(f"+{x}+{y + 20}")
+        self.label = tk.Label(self, text=text, background="#FFFFDD", relief="solid", borderwidth=1)
+        self.label.pack()
+
+    def show(self):
+        self.lift()
 
 
 class UniManagementApp:
     def __init__(self):
         self.filter_entry = []
-
-        def toggle_filter_input():
-            if self.do_filter_results_bool.get() == 1:
-                self.filter_frame.pack()
-            else:
-                self.filter_frame.pack_forget()
 
         self.current_tab = None
         self.db = Database()
@@ -26,6 +33,7 @@ class UniManagementApp:
 
         self.window = tk.Tk()
         self.window.title("Uni management db")
+        self.window.minsize(width=1024,height=-1)
 
         self.notebook = ttk.Notebook(self.window)
         self.notebook.pack(fill="both", expand=True)
@@ -36,9 +44,6 @@ class UniManagementApp:
             self.notebook.add(tab, text=table)
 
         self.notebook.bind("<<NotebookTabChanged>>", self.tab_changed)
-        self.do_filter_results_bool = tk.IntVar()
-
-        self.create_filter_frame()
 
         # Add Refresh and Set Filter buttons
         button_frame = ttk.Frame(self.window)
@@ -51,10 +56,6 @@ class UniManagementApp:
         refresh_button = ttk.Button(button_frame, text="Refresh", command=self.refresh_tab)
         refresh_button.pack(side="left", padx=5)
 
-        filter_checkbox = tk.Checkbutton(button_frame, text="Filter results", variable=self.do_filter_results_bool,
-                                         command=toggle_filter_input)
-        filter_checkbox.pack(side="right", padx=5)
-
         create_button = ttk.Button(button_frame, text="Create entry", command=self.create_entry)
         create_button.pack(side="left", padx=5)
 
@@ -64,10 +65,7 @@ class UniManagementApp:
         delete_button = ttk.Button(button_frame, text="Delete entry", command=self.create_delete_popup)
         delete_button.pack(side="left", padx=5)
 
-        self.filter_frame = ttk.Frame(self.window)
-
     def tab_changed(self, event):
-        self.do_filter_results_bool.set(False)
         selected_tab = event.widget.winfo_children()[event.widget.index("current")]
         tab_id = event.widget.index("current")
         tab_name = event.widget.tab(tab_id, "text")
@@ -92,7 +90,10 @@ class UniManagementApp:
 
         # Configure the treeview columns
         [treeview.heading(col, text=col) for col in column_names]
-        [treeview.column(col, width=100, anchor="center") for col in column_names]
+
+        # Set the stretch attribute of each column to True
+        for col in column_names:
+            treeview.column(col, stretch=True)
 
         # Fetch data from memory and display it in the frame
         rows = self.table_data[tab_name]
@@ -100,27 +101,25 @@ class UniManagementApp:
             values = [val if val is not None else "" for val in row]
             treeview.insert("", tk.END, values=values)
 
+        # Adjust column widths to fit the content
         for col in column_names:
-            treeview.heading(col, command=lambda c=col: self.sort_column(treeview, c, False))
+            treeview.column(col, width=tk_font.Font().measure(col))  # Set initial width based on the column name
 
-        for widget in self.filter_frame.winfo_children():
-            widget.destroy()
+            # Iterate through rows to determine the required width for each column
+            for row in rows:
+                value = row[column_names.index(col)]
+                width = tk_font.Font().measure(value)
+                if width > treeview.column(col, "width"):
+                    treeview.column(col, width=width)
 
-        # create filter field
-        self.filter_entry = []
-        for index, column in enumerate(column_names):
-            label = tk.Label(self.filter_frame, text=column)
-            label.grid(row=0, column=index, padx=(2, 3))
-
-            filter_entry = tk.Entry(self.filter_frame)
-            filter_entry.grid(row=1, column=index, padx=(2, 3))
-            self.filter_entry.append(filter_entry)
+        self.refresh_tab()
 
     def refresh_tab(self):
         # Get the currently selected tab
         tab_id = self.notebook.select()
         tab_name = self.notebook.tab(tab_id, "text")
 
+        self.table_data[self.current_tab] = self.db.get(self.current_tab)
         # Perform the refresh operation for the selected tab
         # Fetch the updated data and display it again
 
@@ -153,9 +152,9 @@ class UniManagementApp:
         def create_entry():
             keys = [label["text"] for label in labels]
             values = [entry.get() for entry in entries]
-            self.db.create_entry(self.current_tab, keys, query=values)
+            self.db.create_entry(tab, keys, query=values)
             self.refresh_tab()
-
+        tab = self.current_tab
         labels = []
         entries = []
         top = tk.Toplevel()
@@ -164,43 +163,26 @@ class UniManagementApp:
         top.grid_columnconfigure(0, weight=1)
 
         content = tk.Frame(top)
-        content.grid(row=0, column=0, sticky="we", padx=10, pady=(1, 2), columnspan=3)
-        content.grid_columnconfigure(2, weight=1)  # Configure column 0 to have weight
+        content.grid(row=0, column=0, sticky="we", padx=10, pady=(1, 2), columnspan=2)
+        content.grid_columnconfigure(1, weight=1)  # Configure column 0 to have weight
 
         for index, column in enumerate(self.tables[self.current_tab]):
             if column == "id" or column == "join_date" or column == "semester" or column == "student_count":
                 continue
 
-            if re.search(r"\bid_[a-zA-z]*\b", column):
-                label = tk.Label(content, text=column[3:])
-                label.grid(row=index, column=1)
-                labels.append(label)
+            label = tk.Label(content, text=column)
+            label.grid(row=index, column=0)
+            labels.append(label)
 
-                query = self.db.get(column[3:])
-                values = [" ".join(map(str, row)) for row in query]
-
-                opt = tk.Listbox(content)
-                opt.insert(tk.END, *values)
-                opt.grid(row=index, column=2, sticky="we", padx=10, pady=(1, 2))  # Remove fill="both" option
-
-                entries.append(opt)
-            else:
-                label = tk.Label(content, text=column)
-                label.grid(row=index, column=1)
-                labels.append(label)
-
-                entry = tk.Entry(content)
-                entry.grid(row=index, column=2, sticky="we", padx=10, pady=(1, 2))
-                entries.append(entry)
+            entry = tk.Entry(content)
+            entry.grid(row=index, column=1, sticky="we", padx=10, pady=(1, 2))
+            entries.append(entry)
 
         button_frame = tk.Frame(top)
-        button_frame.grid(row=1, column=0)
+        button_frame.grid(row=1, column=0, columnspan=2)
 
         create_button = ttk.Button(button_frame, text="Create", command=create_entry)
         create_button.pack(side="left", padx=5)
-
-        clear_button = ttk.Button(button_frame, text="Clear", command=None)
-        clear_button.pack(side="left", padx=5)
 
         content.grid(sticky="nsew")
 
@@ -210,10 +192,11 @@ class UniManagementApp:
         def delete_entry():
             selected_entry = entry_listbox.get(tk.ACTIVE)
             if selected_entry:
-                self.db.delete_entry(self.current_tab, selected_entry)
+                self.db.delete_entry(tab, selected_entry)
                 self.refresh_tab()
             top.destroy()
 
+        tab = self.current_tab
         top = tk.Toplevel()
         top.title("Delete Entry")
         top.minsize(width=600, height=-1)
@@ -261,10 +244,10 @@ class UniManagementApp:
                 values = [entry.get() for entry in entries]
 
                 # Call the update_entry method from the Database class
-                self.db.update_entry(self.current_tab, selected_entry, columns, values)
+                self.db.update_entry(tab, selected_entry, columns, values)
                 self.refresh_tab()
             top.destroy()
-
+        tab = self.current_tab
         top = tk.Toplevel()
         top.title("Update Entry")
         top.minsize(width=600, height=-1)
@@ -304,7 +287,7 @@ class UniManagementApp:
             entry_listbox.insert(tk.END, formatted_row)
 
         for index, column in enumerate(column_names):
-            if column == "id" or column == "join_date" or column == "semester" or column == "student_count":
+            if column == "id" or column == "join_date" or column == "semester" or column == "student_count" or column == "staff_count":
                 continue
 
             label = tk.Label(content, text=column)
@@ -320,34 +303,13 @@ class UniManagementApp:
 
         top.mainloop()
 
-    def apply_filter(self):
-        # Get the filter value from the entry field
-        filter_value = self.filter_entry.get()
+    def show_tooltip(self, event, treeview, column):
+        x, y, _, _ = treeview.bbox(treeview.identify_row(event.y))
+        item = treeview.item(treeview.identify_row(event.y))
+        value = item["values"][column]
 
-        # Get the currently selected tab
-        tab_id = self.notebook.select()
-        tab_name = self.notebook.tab(tab_id, "text")
-
-        # Clear existing data in the tab
-        selected_tab = self.notebook.nametowidget(tab_id)
-        treeview = selected_tab.winfo_children()[0]  # Assume the treeview is the first child
-        treeview.delete(*treeview.get_children())
-
-        # Get the column names for the selected tab
-        column_names = self.tables[tab_name]
-
-        # Fetch data from the database and display it in the treeview
-        rows = self.db.get(tab_name)  # Fetch updated data from the database
-        for row in rows:
-            values = [val if val is not None else "" for val in row]
-
-            # Apply the filter by checking if the filter value exists in any of the row values
-            if filter_value.lower() in [str(value).lower() for value in values]:
-                treeview.insert("", tk.END, values=values)
-
-    def create_filter_frame(self):
-        self.filter_frame = ttk.Frame(self.window)
-        self.filter_frame.pack()
+        tooltip = ToolTip(treeview, text=value, x=x, y=y)
+        tooltip.show()
 
     def run(self):
         self.window.mainloop()
