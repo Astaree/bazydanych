@@ -4,6 +4,7 @@ import tkinter as tk
 from mongoengine import DoesNotExist
 from database import Database, Client, Drink, Meal, Order, Delivery, Picture
 from PIL import Image, ImageTk
+import logging
 
 
 class WindowClient:
@@ -19,83 +20,108 @@ class WindowClient:
         self.tabs.append(self.add_tab(Order, "Orders"))
         self.tabs.append(self.add_tab(Delivery, "Deliveries"))
 
+    def run(self):
+        # Set up logging
+        logging.basicConfig(filename='database_errors.log', level=logging.ERROR)
+
+        try:
+            self.window.mainloop()
+        except Exception as e:
+            logging.exception("An error occurred: %s", str(e))
+
     def add_tab(self, obj_class, tab_name):
         tab = ttk.Frame(self.notebook)
         self.notebook.add(tab, text=tab_name)
 
         # Retrieve data from the database
-        data = obj_class.objects()
+        def get_data():
+            return obj_class.objects()
 
         # Create a treeview widget to display the data
         treeview = ttk.Treeview(tab)
-        treeview.pack(fill=tk.BOTH, expand=True)
+        self.treeview = treeview
+        self.treeview.pack(fill=tk.BOTH, expand=True)
 
         # Define the columns in the treeview
         if obj_class == Drink:
-            treeview["columns"] = ("id", "name", "type", "price", "picture")
-            treeview.column("#0", width=0, stretch=tk.NO)  # Hide the first column
-            treeview.heading("id", text="ID")
-            treeview.heading("name", text="Name")
-            treeview.heading("type", text="Type")
-            treeview.heading("price", text="Price")
-            treeview.heading("picture", text="Picture")
+            self.treeview["columns"] = ("id", "name", "type", "price", "picture")
+            self.treeview.column("#0", width=0, stretch=tk.NO)  # Hide the first column
+            self.treeview.heading("id", text="ID")
+            self.treeview.heading("name", text="Name")
+            self.treeview.heading("type", text="Type")
+            self.treeview.heading("price", text="Price")
+            self.treeview.heading("picture", text="Picture")
         elif obj_class == Meal:
-            treeview["columns"] = ("id", "name", "description", "price", "picture")
-            treeview.column("#0", width=0, stretch=tk.NO)  # Hide the first column
-            treeview.heading("id", text="ID")
-            treeview.heading("name", text="Name")
-            treeview.heading("description", text="Description")
-            treeview.heading("price", text="Price")
-            treeview.heading("picture", text="Picture")
+            self.treeview["columns"] = ("id", "name", "description", "price", "picture")
+            self.treeview.column("#0", width=0, stretch=tk.NO)  # Hide the first column
+            self.treeview.heading("id", text="ID")
+            self.treeview.heading("name", text="Name")
+            self.treeview.heading("description", text="Description")
+            self.treeview.heading("price", text="Price")
+            self.treeview.heading("picture", text="Picture")
         elif obj_class == Order:
-            treeview["columns"] = ("id", "client", "dateOfOrder", "dateOfDelivery", "status")
-            treeview.column("#0", width=0, stretch=tk.NO)  # Hide the first column
-            treeview.heading("id", text="ID")
-            treeview.heading("client", text="Client")
-            treeview.heading("dateOfOrder", text="Order Date")
-            treeview.heading("dateOfDelivery", text="Delivery Date")
-            treeview.heading("status", text="Status")
+            self.treeview["columns"] = ("id", "client", "dateOfOrder", "dateOfDelivery", "status")
+            self.treeview.column("#0", width=0, stretch=tk.NO)  # Hide the first column
+            self.treeview.heading("id", text="ID")
+            self.treeview.heading("client", text="Client")
+            self.treeview.heading("dateOfOrder", text="Order Date")
+            self.treeview.heading("dateOfDelivery", text="Delivery Date")
+            self.treeview.heading("status", text="Status")
         elif obj_class == Delivery:
-            treeview["columns"] = ("id", "name", "company")
-            treeview.column("#0", width=0, stretch=tk.NO)  # Hide the first column
-            treeview.heading("id", text="ID")
-            treeview.heading("name", text="Name")
-            treeview.heading("company", text="Company")
+            self.treeview["columns"] = ("id", "name", "company")
+            self.treeview.column("#0", width=0, stretch=tk.NO)  # Hide the first column
+            self.treeview.heading("id", text="ID")
+            self.treeview.heading("name", text="Name")
+            self.treeview.heading("company", text="Company")
 
         # Populate the treeview with data
-        for item in data:
-            if obj_class == Drink:
-                picture_names = [p.name for p in item.picture] if item.picture else []
-                picture_name = ", ".join(picture_names)
-                treeview.insert("", tk.END, text="", values=(item.id, item.name, item.type, item.price, picture_name))
-            elif obj_class == Meal:
-                picture_names = [p.name for p in item.picture] if item.picture else []
-                picture_name = ", ".join(picture_names)
-                treeview.insert("", tk.END, text="", values=(item.id, item.name, item.type, item.price, picture_name))
-            elif obj_class == Order:
-                client_name = item.client.name if item.client else ""
-                treeview.insert("", tk.END, text="",
-                                values=(item.id, client_name, item.dateOfOrder, item.dateOfDelivery, item.status))
-            elif obj_class == Delivery:
-                treeview.insert("", tk.END, text="", values=(item.id, item.name, item.company))
+        def populate_treeview(data):
+            self.treeview.delete(*self.treeview.get_children())
+            for item in data:
+                if obj_class == Drink:
+                    picture_names = [p.name for p in item.picture] if item.picture else []
+                    picture_name = ", ".join(picture_names)
+                    self.treeview.insert("", tk.END, text="",
+                                         values=(item.id, item.name, item.type, item.price, picture_name))
+                elif obj_class == Meal:
+                    picture_names = [p.name for p in item.picture] if item.picture else []
+                    picture_name = ", ".join(picture_names)
+                    self.treeview.insert("", tk.END, text="",
+                                         values=(item.id, item.name, item.type, item.price, picture_name))
+                elif obj_class == Order:
+                    client_name = item.client.name if item.client else ""
+                    self.treeview.insert("", tk.END, text="",
+                                         values=(
+                                             item.id, client_name, item.dateOfOrder, item.dateOfDelivery, item.status))
+                elif obj_class == Delivery:
+                    self.treeview.insert("", tk.END, text="", values=(item.id, item.name, item.company))
 
         # Add scrollbar to the treeview
-        scrollbar = ttk.Scrollbar(tab, orient="vertical", command=treeview.yview)
-        treeview.configure(yscrollcommand=scrollbar.set)
+        scrollbar = ttk.Scrollbar(tab, orient="vertical", command=self.treeview.yview)
+        self.treeview.configure(yscrollcommand=scrollbar.set)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
         # Create buttons for CRUD operations (Create, Update, Delete)
         create_button = ttk.Button(tab, text="Create", command=self.create_object)
         create_button.pack(side=tk.LEFT, padx=5, pady=5, anchor="s")
 
-        update_button = ttk.Button(tab, text="Update", command=lambda: self.update_object(treeview, obj_class))
+        update_button = ttk.Button(tab, text="Update", command=lambda: self.update_object(self.treeview, obj_class))
         update_button.pack(side=tk.LEFT, padx=5, pady=5, anchor="s")
 
-        delete_button = ttk.Button(tab, text="Delete", command=lambda: self.delete_object(treeview, obj_class))
+        delete_button = ttk.Button(tab, text="Delete", command=lambda: self.delete_object(self.treeview, obj_class))
         delete_button.pack(side=tk.LEFT, padx=5, pady=5, anchor="s")
 
         # Bind a function to display the selected object's picture
-        treeview.bind("<Double-Button-1>", lambda event: self.display_picture(event, treeview, obj_class))
+        self.treeview.bind("<Double-Button-1>",
+                           lambda event: self.display_picture(event, self.treeview, obj_class))
+
+        # Add refresh button
+        refresh_button = ttk.Button(tab, text="Refresh", command=lambda: populate_treeview(data))
+        refresh_button.pack(side=tk.LEFT, padx=5, pady=5, anchor="s")
+
+        # Retrieve the initial data from the database and populate the treeview
+        data = get_data()
+        populate_treeview(data)
 
         return tab
 
@@ -162,7 +188,9 @@ class WindowClient:
                     picture = Picture(name=drink_name, picture=picture_data)
                     picture.save()
                     drink.picture = [picture]
-                    drink.save()
+
+                # Save the created drink object
+                drink.save()
 
                 form_window.destroy()
 
@@ -206,12 +234,14 @@ class WindowClient:
                     picture = Picture(name=meal_name, picture=picture_data)
                     picture.save()
                     meal.picture = [picture]
+
                 meal.save()
 
                 form_window.destroy()
 
             submit_button = ttk.Button(form_window, text="Submit", command=submit_form)
             submit_button.pack()
+
 
         elif current_tab == "Orders":
             form_window = tk.Toplevel()
