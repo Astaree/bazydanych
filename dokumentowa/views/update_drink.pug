@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  div.wrapper
+    h1 Update Drink
+    form(action=`/api/edit_drink/${drink._id}`, method="POST")
+      label(for="name") Name:
+      input(type="text", name="name", required="true", value=drink.name)
+
+      label(for="type") Type:
+      input(type="text", name="type", required="true", value=drink.type)
+
+      label(for="price") Price:
+      input(type="text", name="price", required="true", value=drink.price)
+
+      input(type="submit", value="Update Drink")

@@ -10,7 +10,7 @@ block content
         p Price: #{drink.price}
         if drink.Picture
           img(src=`/pictures/${drink.Picture._id}`)
-        a(href="/api/edit_drink/#{drink._id}") Edit
+        a(href=`/api/edit_drink/${drink._id}`) Edit
         br
-        a(href="/api/delete_drink/#{drink._id}") Delete
+        a(href=`/api/delete_drink/${drink._id}` ) Delete
         

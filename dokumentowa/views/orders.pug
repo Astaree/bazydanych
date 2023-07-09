@@ -10,7 +10,7 @@ block content
         p Client: #{order.client.name}
         p Date of Order: #{order.dateOfOrder}
         p Date of Delivery: #{order.dateOfDelivery}
-        p Status: #{order.status}
+        p state: #{order.state}
 
         h4 Drinks:
         ul
@@ -22,6 +22,6 @@ block content
           each meal in order.meals
             li= `${meal.quantity} szt. * ${meal.meal.name} - ${meal.meal.price} PLN`
 
-        a(href="/api/edit_order/#{order._id}") Edit
+        a(href=`/api/edit_order/${order._id}`) Edit
         br
-        a(href="/api/delete_order/#{order._id}") Delete
+        a(href=`/api/delete_order/${order._id}` ) Delete

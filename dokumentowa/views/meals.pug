@@ -14,6 +14,6 @@ block content
           ul
             each ingredient in meal.ingredients
               li #{ingredient.name} - Quantity: #{ingredient.quantity}
-        a(href="/api/edit_meal/#{meal._id}") Edit
+        a(href=`/api/edit_meal/${meal._id}`) Edit
         br
-        a(href="/api/delete_meal/#{meal._id}") Delete
+        a(href=`/api/delete_meal/${meal._id}` ) Delete

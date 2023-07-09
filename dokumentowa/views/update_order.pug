@@ -1,0 +1,25 @@
+extends layout
+
+block content
+  div.wrapper
+    h1 Update Order
+    form(action=`/api/edit_order/${order._id}`, method="POST")
+      label(for="clientName") Client Name:
+      input(type="text", name="clientName", required="true", value=order.client.name)
+
+      label(for="clientAddress") Client Address:
+      input(type="text", name="clientAddress", required="true", value=order.client.address)
+
+      label(for="clientPhoneNumber") Client Phone Number:
+      input(type="text", name="clientPhoneNumber", required="true", value=order.client.phoneNumber)
+
+      label(for="clientEmail") Client Email:
+      input(type="email", name="clientEmail", required="true", value=order.client.email)
+
+      label(for="state") state:
+      select(name="state", required="true")
+        option(value="Pending" selected)= "Pending"
+        option(value="In Progress")= "In Progress"
+        option(value="Completed")= "Completed"
+
+      input(type="submit", value="Update Order")
