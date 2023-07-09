@@ -10,9 +10,9 @@ const drinkSchema = new mongoose.Schema({
         required: true,
     },
     price: {
-        type: Number,
+        type: String,
         required: true,
-    }
+    },
 });
 
 module.exports = mongoose.model('Drink', drinkSchema);

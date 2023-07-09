@@ -1,11 +1,15 @@
 extends layout 
 block content
   div.wrapper
-    form(action="/api/new_drink", method="POST")
+    form(action="/api/new_drink", enctype="multipart/form-data", method="POST")
       label(for="name") Name:
-      input(type="text", name="name", id="name")
+      input(type="text", name="name", required="true")
+
       label(for="type") Type:
-      input(type="text", name="type", id="type")
+      input(type="text", name="type", required="true")
+
       label(for="price") Price:
-      input(type="number", name="price", id="price")
-      input(type="submit", value="Submit")
+      input(type="text", name="price", required="true")
+      
+
+      input(type="submit", value="Create Drink")

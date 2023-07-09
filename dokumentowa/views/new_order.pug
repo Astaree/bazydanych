@@ -1,7 +1,38 @@
 extends layout 
 block content
   div.wrapper
-    div.containerL
-      p example 1
-    div.containerR
-      p example 2
+    form(action="/api/new_order", method="POST")
+      label(for="newClientName") Name:
+      input(type="text", name="newClientName", required="true")
+
+      label(for="newClientAddress") Address:
+      input(type="text", name="newClientAddress", required="true")
+
+      label(for="newClientPhoneNumber") Phone Number:
+      input(type="tel", name="newClientPhoneNumber", required="true")
+
+      label(for="newClientEmail") Email:
+      input(type="email", name="newClientEmail", required="true")
+      br
+      br
+      label(for="drinks") Drinks:
+      each drink in drinks
+        div
+          input(type="number", name=`drinks[${drink._id}][quantity]`, placeholder="Quantity", required="true", min="0")
+          span= drink.name
+          span= drink.price
+      br
+      label(for="meals") Meals:
+      each meal in meals
+        div
+          input(type="number", name=`meals[${meal._id}][quantity]`, placeholder="Quantity", required="true", min="0")
+          span= meal.name
+          span= meal.price
+      br
+      label(for="state") start:
+      select(id="state", name="state")
+        option(value="Pending") Pending
+        option(value="In Progress") In Progress
+        option(value="Completed") Completed
+
+      input(type="submit", value="Create Order")

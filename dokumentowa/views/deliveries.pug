@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  div.wrapper
+    h1 Delivery Information
+    a(href="/api/new_delivery") Add New Delivery
+    each delivery in deliveries
+      div.delivery
+        h3
+          a(href=`/api/deliveries/${delivery.order}`)= "Delivery ID: " + delivery._id
+        p Name: #{delivery.name}
+        p Company: #{delivery.company}
+        p Order ID: #{delivery.order}
+        a(href=`/api/edit_delivery/${delivery._id}`) Edit
+        br
+        a(href=`/api/delete_delivery/${delivery._id}` ) Delete

@@ -1,0 +1,16 @@
+extends layout 
+block content
+  div.wrapper
+    h1 Drink List
+    a(href="/api/new_drink") Add a new drink
+    each drink in drinks
+      div
+        h3= drink.name
+        p Type: #{drink.type}
+        p Price: #{drink.price}
+        if drink.Picture
+          img(src=`/pictures/${drink.Picture._id}`)
+        a(href="/api/edit_drink/#{drink._id}") Edit
+        br
+        a(href="/api/delete_drink/#{drink._id}") Delete
+        

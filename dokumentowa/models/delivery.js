@@ -10,9 +10,9 @@ const deliverySchema = new mongoose.Schema({
         required: true,
     },
     order: {
-        type: Number,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
     },
 });
 
-module.exports = mongoose.model('Delivery', deliverySchema);
+module.exports = mongoose.model('Deliveries', deliverySchema);

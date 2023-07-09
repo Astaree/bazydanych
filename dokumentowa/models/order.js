@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
+const client = require('./client');
 
 const orderSchema = new mongoose.Schema({
-    //ref to client
+    //embeded client
     client: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Client',
+        type: client.schema,
         required: true,
     },
     //ref to drinks
@@ -28,18 +28,8 @@ const orderSchema = new mongoose.Schema({
             }
         }
     ],
-    //date of order
-    dateOfOrder: {
-        type: Date,
-        required: true,
-    },
-    //date when order client want to get
-    dateOfDelivery: {
-        type: Date,
-        required: true,
-    },
     //status of order
-    status: {
+    state: {
         type: String,
         required: true,
     },

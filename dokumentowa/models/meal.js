@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const ingredients = require('./ingredient');
-const Picture = require('./picture');
 
 const mealSchema = new mongoose.Schema({
     name: {
@@ -19,16 +18,9 @@ const mealSchema = new mongoose.Schema({
         required: true,
     },
     ingredients: [{
-        quantity: Number,
-        ingredient: {
-            type: ingredients.schema,
-            required: true,
-        }
-    }],
-    picture: [{
-        type: Picture.schema,
-
-    }],
+        type: ingredients.schema,
+        required: true,
+}],
 });
 
 module.exports = mongoose.model('Meal', mealSchema);

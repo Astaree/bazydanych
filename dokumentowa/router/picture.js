@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const Picture = require('../controller/picture');
 
 router.get('/:id', async (req, res) => {
   await Picture.getPictureById(req.params.id).then((picture) => {

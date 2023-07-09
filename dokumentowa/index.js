@@ -16,6 +16,7 @@ const app = express();
 app.use(new morgan('combined'));
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 
 // Use the router for handling routes
