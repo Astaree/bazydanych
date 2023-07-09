@@ -33,7 +33,7 @@ class UniManagementApp:
 
         self.window = tk.Tk()
         self.window.title("Uni management db")
-        self.window.minsize(width=1024,height=-1)
+        self.window.minsize(width=1024, height=-1)
 
         self.notebook = ttk.Notebook(self.window)
         self.notebook.pack(fill="both", expand=True)
@@ -154,6 +154,7 @@ class UniManagementApp:
             values = [entry.get() for entry in entries]
             self.db.create_entry(tab, keys, query=values)
             self.refresh_tab()
+
         tab = self.current_tab
         labels = []
         entries = []
@@ -247,6 +248,7 @@ class UniManagementApp:
                 self.db.update_entry(tab, selected_entry, columns, values)
                 self.refresh_tab()
             top.destroy()
+
         tab = self.current_tab
         top = tk.Toplevel()
         top.title("Update Entry")
@@ -287,7 +289,7 @@ class UniManagementApp:
             entry_listbox.insert(tk.END, formatted_row)
 
         for index, column in enumerate(column_names):
-            if column == "id" or column == "join_date" or column == "semester" or column == "student_count" or column == "staff_count":
+            if column == "id" or column == "join_date" or column == "semester" or column == "student_count" or column == "staff_count" or column == "occupancy":
                 continue
 
             label = tk.Label(content, text=column)
