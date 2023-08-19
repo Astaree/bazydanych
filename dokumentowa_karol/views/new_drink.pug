@@ -1,0 +1,15 @@
+extends layout 
+block content
+  div.wrapper
+    form(action="/api/new_drink", enctype="multipart/form-data", method="POST")
+      label(for="name") Name:
+      input(type="text", name="name", required="true")
+
+      label(for="type") Type:
+      input(type="text", name="type", required="true")
+
+      label(for="price") Price:
+      input(type="text", name="price", required="true")
+      
+
+      input(type="submit", value="Create Drink")

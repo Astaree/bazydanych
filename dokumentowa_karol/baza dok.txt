@@ -1,0 +1,59 @@
+Table drink {
+    id integer [primary key]
+}
+
+Table meal {
+  id integer [primary key]
+  id_ingr Table
+
+}
+
+Table ingr {
+  id integer [primary key]
+  title varchar
+  body text [note: 'Content of the post']
+  user_id integer
+  status varchar
+  created_at timestamp
+}
+
+Table client{
+  id integer [primary key]
+  id_opinion Table
+}
+
+Table restaurnat{
+  id integer
+}
+
+Table order{
+  id integer [primary key]
+  id_meals id 
+  id_drinks id
+  id_client id
+  id_restaurnat Table
+}
+
+Table opinion{
+  id integer [primary key]
+}
+
+Ref: meal.id_ingr < ingr.id
+
+Ref: order.id_meals < meal.id
+Ref: order.id_drinks < drink.id
+Ref: order.id_client < client.id
+Ref: order.id_restaurnat < restaurnat.id
+
+Ref: client.id_opinion < opinion.id
+
+// ref: order <- meal, client, drinks
+// nesting order < restaurnat 
+// nesting client < opinion 
+// nesting meal < ingr 
+
+//kolekcje:
+//zamówienie,
+//client,
+//posiłek,
+//napoje

@@ -1,0 +1,30 @@
+extends layout 
+block content
+  div.wrapper
+    form(action="/api/new_meal", method="POST")
+      label(for="name") Name:
+      input(type="text", name="name", required="true")
+
+      label(for="description") Description:
+      input(type="text", name="description")
+
+      label(for="averageTimeToCook") Average Time to Cook (minutes):
+      input(type="number", name="averageTimeToCook", required="true")
+
+      label(for="price") Price:
+      input(type="string", name="price", required="true")
+
+      div(id="ingredients-container")
+        h3 ingredients_arr:
+        div(class="ingredient-row")
+          label(for="ingredient-name-0") Name:
+          input(type="text", name="ingredients[0][name]", required="true")
+          
+          label(for="ingredient-quantity-0") Quantity:
+          input(type="string", name="ingredients[0][quantity]", required="true")
+          
+        button(type="button", id="add-ingredient-button") Add Ingredient
+
+      input(type="submit", value="Create Meal")
+
+    script(src="/js/new_meal.js")

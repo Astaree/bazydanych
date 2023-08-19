@@ -1,0 +1,19 @@
+extends layout 
+block content
+  div.wrapper
+    h1 Meal List
+    a(href="/api/new_meal") Add a new meal
+    each meal in meals
+      div
+        h3= meal.name
+        p Description: #{meal.description}
+        p Average Time to Cook: #{meal.averageTimeToCook} minutes
+        p Price: #{meal.price}
+        if meal.ingredients.length
+          h4 Ingredients:
+          ul
+            each ingredient in meal.ingredients
+              li #{ingredient.name} - Quantity: #{ingredient.quantity}
+        a(href=`/api/edit_meal/${meal._id}`) Edit
+        br
+        a(href=`/api/delete_meal/${meal._id}` ) Delete

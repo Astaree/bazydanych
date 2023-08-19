@@ -1,0 +1,19 @@
+extends layout
+
+block content
+  div.wrapper
+    h1 New Delivery
+    form(action="/api/new_delivery", method="POST")
+      label(for="name") Name:
+      input(type="text", name="name", required="true")
+
+      label(for="company") Company:
+      input(type="text", name="company", required="true")
+
+      label(for="order") Order:
+      select(name="order", required="true")
+        option(value="") -- Select Order --
+        each order in orders
+          option(value=order._id)= order._id
+
+      input(type="submit", value="Create Delivery")

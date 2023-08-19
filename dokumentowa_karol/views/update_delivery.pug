@@ -1,0 +1,22 @@
+extends layout
+
+block content
+  div.wrapper
+    h1 Update Delivery
+    form(action=`/api/edit_delivery/${delivery._id}`, method="POST")
+      label(for="name") Name:
+      input(type="text", name="name", required="true", value=delivery.name)
+
+      label(for="company") Company:
+      input(type="text", name="company", required="true", value=delivery.company)
+
+      label(for="order") Order:
+      select(name="order", required="true")
+        option(value="") -- Select Order --
+        each order in orders
+          if order._id.toString() === delivery.order.toString()
+            option(value=order._id, selected)= order._id
+          else
+            option(value=order._id)= order._id
+
+      input(type="submit", value="Update Delivery")

@@ -1,0 +1,62 @@
+{
+  "drinks":{
+    "name": "string",
+    "description": "string",
+    "price": "number"
+  },
+
+  "meal":{
+    "name": "string",
+    "description": "string",
+    "price": "number",
+    "ingredients":
+    [
+      [{ 
+        "name": "string",
+        "description": "string",
+        "price": "number"
+      },
+      "amount"
+      ]
+    ]
+  },
+
+  "order":{
+    "restaurant": {
+      nazwa,
+      adres,
+      telefon,
+      email,
+      godziny otwarcia,
+    },
+    "client": "id",
+    "drinks": [
+      {
+        id,
+        amount
+      }
+    ],
+    "meals": [
+      {
+        id,
+        amount
+      }
+    ],
+  },
+
+
+  "client":{
+    "id": "number",
+    "name": "string",
+    "surname": "string",
+    "email": "string",
+    "phone": "string",
+    "address": "string",
+    "opinia": {
+      id zamówienia
+      id klienta
+      opinia
+    }
+  },
+
+}

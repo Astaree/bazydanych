@@ -1,0 +1,28 @@
+extends layout
+
+block content
+  div.wrapper
+    h1 Order List
+    a(href="/api/new_order") Add a new order 
+    each order in orders
+      div
+        h3= "Order ID: " + order._id
+        //- p Client: #{order.client.name} #{order.client.address} #{order.client.phoneNumber}
+        p Client: #{order.client}  
+        p Date of Order: #{order.dateOfOrder}
+        p Date of Delivery: #{order.dateOfDelivery}
+        p state: #{order.state}
+
+        h4 Drinks:
+        ul
+          each drink in order.drinks
+            li= `${drink.quantity} szt. * ${drink.drink.name} - ${drink.drink.price} PLN`
+
+        h4 Meals:
+        ul
+          each meal in order.meals
+            li= `${meal.quantity} szt. * ${meal.meal.name} - ${meal.meal.price} PLN`
+
+        a(href=`/api/edit_order/${order._id}`) Edit
+        br
+        a(href=`/api/delete_order/${order._id}` ) Delete
